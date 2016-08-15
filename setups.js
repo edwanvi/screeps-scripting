@@ -1,0 +1,25 @@
+//nail down Spawn1
+var spawn_id = Game.spawns.Spawn1.id;
+var spawn = getObjectById(spawn_id);
+//signify we ran setup, mostly just in case
+spawn.memory.ran_setup = true;
+if (spawn.memory.setup_stage == null) {
+	spawn.memory.setup_stage = 0;
+	//get a list of energysources and print it
+	energysources = spawn.room.find(FIND_SOURCES);
+	console.out(energysources);
+
+	console.out("Setup phase 0 complete, terminating. Some phases remain.");
+} else if (spawn.memory.setup_stage == 1) {
+	//stage one = spawn miners
+	console.out("Spawning an early phase miner.");
+	var numberOfMiners = _.sum(Game.creeps, (c) => c.memory.role == 'miner');
+	console.out("Currently there are " + numberOfMiners + " miners.");
+	numberOfMiners = _.sum(Game.creeps, (c) => c.memory.role == 'miner');
+	//just doing move carry work until i can see what a reasonable limit is
+	spawn.createCreep([MOVE, CARRY, WORK], undefined, {role: 'miner' + numberOfMiners+1});
+	if (numberOfMiners > spawn.room.find(FIND_SOURCES).length) {
+		//we have spawned one miner/source. move on.
+		spawn.memory.setup_stage++;
+	}
+}
