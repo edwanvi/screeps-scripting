@@ -32,7 +32,13 @@ module.exports = {
             }
 		} else if (creep.carry.energy == creep.carryCapacity) {
 			// we're full captain!
-			if (crrep.)
+			if (creep.memory.container_id == null) {
+				// we need to know what our container is for the future.
+				creep.memory.container_id = creep.memory.flag.pos.findClosestByRange(FIND_MY_STRUCTURES, 
+					{filter: (structure) => structure.type == "container"}).id;
+			} else {
+				// deposit energy
+			}
 		}
 	}
 };

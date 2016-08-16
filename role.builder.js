@@ -15,7 +15,7 @@ module.exports = {
             creep.memory.working = true;
         }
 
-        if (creep.memory.closestsource == null) {
+        if (creep.memory.energysource == null) {
             extrautils.newsource.run(creep);
         }
 
