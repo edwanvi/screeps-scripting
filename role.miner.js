@@ -18,10 +18,21 @@ module.exports = {
 			creep.memory.miner_number = miner_number;
 		}
 		// now we need to find our flag
-		if (creep.memory.miner_number = 1) {
-			creep.memory.flag = Game.flags.miningFlag1;
-		} else {
-			creep.memory.flag = Game.flags.miningFlag2;
+		if (creep.memory.flag == null) {
+			if (creep.memory.miner_number == 1) {
+				creep.memory.flag = Game.flags.miningFlag1;
+			} else {
+				creep.memory.flag = Game.flags.miningFlag2;
+			}
+		} else if (creep.carry.energy < creep.carryCapacity) {
+			// move to flag, start mining
+			var source = creep.memory.flag.pos.findClosestByRange(FIND_SOURCES);
+			if (creep.harvest(source) == ERR_NOT_IN_RANGE) {
+                creep.moveTo(creep.memory.flag);
+            }
+		} else if (creep.carry.energy == creep.carryCapacity) {
+			// we're full captain!
+			if (crrep.)
 		}
 	}
 };
