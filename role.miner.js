@@ -12,12 +12,15 @@ module.exports = {
 		// first, find the flags in this room.
 		// second, filter out all that don't start with 'miningFlag'
 		// third, memorize the flag that matches our role.
-		// ten = magic number that means flags only 
+		// ten = magic number that means flags only
+
+		//get the creeps miner number and commit it to memory
 		if (creep.memory.miner_number == null) {
 			var miner_number = creep.memory.role.substring(5, 6);
 			creep.memory.miner_number = miner_number;
 		}
 		// now we need to find our flag
+		// we assume these flags exist already.
 		if (creep.memory.flag == null) {
 			if (creep.memory.miner_number == 1) {
 				creep.memory.flag = Game.flags.miningFlag1;
@@ -25,19 +28,29 @@ module.exports = {
 				creep.memory.flag = Game.flags.miningFlag2;
 			}
 		} else if (creep.carry.energy < creep.carryCapacity) {
-			// move to flag, start mining
+			// now that we have a number, we need to start mining our energy source
 			var source = creep.memory.flag.pos.findClosestByRange(FIND_SOURCES);
 			if (creep.harvest(source) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(creep.memory.flag);
-            }
+      	creep.moveTo(creep.memory.flag);
+      }
 		} else if (creep.carry.energy == creep.carryCapacity) {
 			// we're full captain!
 			if (creep.memory.container_id == null) {
 				// we need to know what our container is for the future.
-				creep.memory.container_id = creep.memory.flag.pos.findClosestByRange(FIND_MY_STRUCTURES, 
+				// To do this, we get the id of the container closest to our flag.
+				creep.memory.container_id = creep.memory.flag.pos.findClosestByRange(FIND_MY_STRUCTURES,
 					{filter: (structure) => structure.type == "container"}).id;
 			} else {
 				// deposit energy
+				// case one we deposit in our container no problem
+				if (creep.transfer(Game.getObjectById(creep.memory.container_id), RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+					creep.moveTo(Game.getObjectById(creep.memory.container_id));
+				// case two: the container is full, so we p
+				} else if (creep.transfer(Game.getObjectById(creep.memory.container_id), RESOURCE_ENERGY) == ERR_FULL) {
+					if (creep.transfer(Game.spawns.Spawn1, RESOURCE_ENERGY) ==  ERR_NOT_IN_RANGE) {
+
+					}
+				}
 			}
 		}
 	}
