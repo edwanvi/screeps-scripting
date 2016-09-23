@@ -14,7 +14,6 @@ module.exports.loop = function () {
         }
     }
 
-    
     var tower = Game.getObjectById('57af8439d7470970440fa983');
     if (tower) {
         var closestDamagedStructure = tower.pos.findClosestByRange(FIND_STRUCTURES, {
@@ -47,11 +46,12 @@ module.exports.loop = function () {
         else if (creep.memory.role == 'builder') {
             roleBuilder.run(creep);
         }
+        // if creep is janitor, call janitor script
         else if (creep.memory.role == 'janitor') {
             roleJanitor.run(creep);
         }
     }
-    
+
     // setup some minimum numbers for different roles
     var minimumNumberOfHarvesters = 10;
     var minimumNumberOfUpgraders = 3;
@@ -72,28 +72,29 @@ module.exports.loop = function () {
     if (numberOfHarvesters < minimumNumberOfHarvesters) {
         // try to spawn one
         name = Game.spawns.Spawn1.createCreep(specs.harvesterSpecs, undefined,
-            { role: 'harvester', working: false});
+            {role: 'harvester', working: false});
     }
     // if not enough upgraders
     else if (numberOfUpgraders < minimumNumberOfUpgraders) {
         // try to spawn one
         name = Game.spawns.Spawn1.createCreep(specs.upgraderSpecs, undefined,
-            { role: 'upgrader', working: false});
+            {role: 'upgrader', working: false});
     }
     // if not enough builders
     else if (numberOfBuilders < minimumNumberOfBuilders) {
         // try to spawn one
         name = Game.spawns.Spawn1.createCreep(specs.builderSpecs, undefined,
-            { role: 'builder', working: false});
+            {role: 'builder', working: false});
     }
     else if (numberOfJanitors < minimumNumberOfJanitors) {
         // try to spawn a janitor
-        name = Game.spawns.Spawn1.createCreep(specs.janitorSpecs, undefined, {role: 'janitor', working: false});
+        name = Game.spawns.Spawn1.createCreep(specs.janitorSpecs, undefined,
+          {role: 'janitor', working: false});
     }
     else {
         // else try to spawn a builder
         name = Game.spawns.Spawn1.createCreep(specs.builderSpecs, undefined,
-            { role: 'builder', working: false});
+            {role: 'builder', working: false});
     }
 
     // print name to console if spawning was a success

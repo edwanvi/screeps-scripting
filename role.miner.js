@@ -43,12 +43,13 @@ module.exports = {
 			} else {
 				// deposit energy
 				// case one we deposit in our container no problem
-				if (creep.transfer(Game.getObjectById(creep.memory.container_id), RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-					creep.moveTo(Game.getObjectById(creep.memory.container_id));
-				// case two: the container is full, so we p
-				} else if (creep.transfer(Game.getObjectById(creep.memory.container_id), RESOURCE_ENERGY) == ERR_FULL) {
+				var creepContainer = Game.getObjectById(creep.memory.container_id);
+				if (creep.transfer(creepContainer, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+					creep.moveTo(creepContainer);
+				} else if (creep.transfer(creepContainer, RESOURCE_ENERGY) == ERR_FULL) {
+				// case two: the container is full, so we put it in Spawn1
 					if (creep.transfer(Game.spawns.Spawn1, RESOURCE_ENERGY) ==  ERR_NOT_IN_RANGE) {
-
+						creep.moveTo(Game.spawns.Spawn1);
 					}
 				}
 			}
