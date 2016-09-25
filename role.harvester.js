@@ -29,7 +29,7 @@ module.exports = {
         });
       if(targets.length > 0) {
         if(creep.transfer(targets[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-          creep.moveTo(targets[0]);
+          creep.moveTo(targets[0], {reusePath:20});
         }
       }
     }
@@ -37,7 +37,7 @@ module.exports = {
     else {
       var sources = creep.room.find(FIND_SOURCES)
       if (creep.harvest(sources[creep.memory.energysource]) == ERR_NOT_IN_RANGE) {
-        creep.moveTo(sources[creep.memory.energysource])
+        creep.moveTo(sources[creep.memory.energysource], {reusePath:20})
       }
     }
   }
