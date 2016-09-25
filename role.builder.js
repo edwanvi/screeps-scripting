@@ -25,7 +25,7 @@ module.exports = {
             var sites = creep.room.find(FIND_CONSTRUCTION_SITES);
             if(sites.length > 0) {
                 if(creep.build(sites[0]) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(sites[0]);
+                    creep.moveTo(sites[0], {reusePath:20});
                 }
             }
             // if no constructionSite is found
@@ -42,7 +42,7 @@ module.exports = {
             // try to harvest energy, if the source is not in range
             if (creep.harvest(source) == ERR_NOT_IN_RANGE) {
                 // move towards the source
-                creep.moveTo(source);
+                creep.moveTo(source, {reusePath:20});
             }
         }
     }
