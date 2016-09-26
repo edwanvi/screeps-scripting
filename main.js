@@ -13,7 +13,7 @@ module.exports.loop = function () {
       console.log('Clearing non-existing creep memory:', name);
     }
   }
-
+  // man the tower
   var tower = Game.getObjectById('57af8439d7470970440fa983');
   if (tower) {
     var closestDamagedStructure = tower.pos.findClosestByRange(FIND_STRUCTURES, {
@@ -58,7 +58,7 @@ module.exports.loop = function () {
   var minimumNumberOfBuilders = 2;
   var minimumNumberOfJanitors = 1;
   // maxiumum populations
-  var maxiumumNumberOfHarvesters = 5;
+  var maxiumumNumberOfHarvesters = 7;
   var maxiumumNumberOfUpgraders = 3;
   var maxiumumNumberOfBuilders = 4;
   var maxiumumNumberOfJanitors = 2;
@@ -73,27 +73,29 @@ module.exports.loop = function () {
   var name = undefined;
 
   // if not enough harvesters
-  if (numberOfHarvesters < minimumNumberOfHarvesters && numberOfHarvesters <= maxiumumNumberOfHarvesters) {
+  if (numberOfHarvesters < maxiumumNumberOfHarvesters) {
     // try to spawn one
     name = Game.spawns.Spawn1.createCreep(specs.harvesterSpecs, undefined,
       {role: 'harvester', working: false});
   }
   // if not enough upgraders
-  else if (numberOfUpgraders < minimumNumberOfUpgraders && numberOfUpgraders <= maxiumumNumberOfUpgraders) {
+  else if (numberOfUpgraders < maxiumumNumberOfUpgraders) {
     // try to spawn one
     name = Game.spawns.Spawn1.createCreep(specs.upgraderSpecs, undefined,
       {role: 'upgrader', working: false});
   }
   // if not enough builders
-  else if (numberOfBuilders < minimumNumberOfBuilders && numberOfBuilders <= maxiumumNumberOfBuilders) {
+  else if (numberOfBuilders < maxiumumNumberOfBuilders) {
     // try to spawn one
     name = Game.spawns.Spawn1.createCreep(specs.builderSpecs, undefined,
       {role: 'builder', working: false});
   }
-  else if (numberOfJanitors < minimumNumberOfJanitors && numberOfJanitors <= maxiumumNumberOfJanitors) {
+  else if (numberOfJanitors < maxiumumNumberOfJanitors) {
     // try to spawn a janitor
     name = Game.spawns.Spawn1.createCreep(specs.janitorSpecs, undefined,
       {role: 'janitor', working: false});
+  } else {
+    // console.log("No creep spawned");
   }
   // print name to console if spawning was a success
   // name > 0 would not work since string > 0 returns false
