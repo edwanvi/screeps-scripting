@@ -21,7 +21,7 @@ module.exports = {
 
     if(creep.memory.working) {
       if(creep.repair(targets[0]) == ERR_NOT_IN_RANGE) {
-        creep.moveTo(targets[0]);
+        creep.moveTo(targets[0], {reusePath:30});
       } else if (targets.length == 0) {
         roleBuilder.run(creep);
       }
