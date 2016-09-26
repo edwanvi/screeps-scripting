@@ -17,7 +17,16 @@ module.exports = {
     if (creep.memory.energysource == null) {
       extrautils.newsource.run(creep);
     }
-
+    // make the spawn store the paths from spawn -> energy
+    var sources = creep.room.find(FIND_SOURCES);
+    if (Game.spawns.Spawn1.memory.source0path == null) {
+      Game.spawns.Spawn1.memory.source0path = Room.serializePath(creep.room.findPath(Game.spawns.Spawn1.pos, sources[0].pos, {ignoreCreeps:true}));
+    }
+    else if (Game.spawns.Spawn1.memory.source1path == null) {
+      Game.spawns.Spawn1.memory.source1path = Room.serializePath(creep.room.findPath(Game.spawns.Spawn1.pos, sources[1].pos, {ignoreCreeps:true}));
+    } else {
+      
+    }
     // if creep is supposed to transfer energy to the spawn
     if (creep.memory.working == true) {
       // try to transfer energy, if the spawn is not in range
