@@ -24,8 +24,6 @@ module.exports = {
     }
     else if (Game.spawns.Spawn1.memory.source1path == null) {
       Game.spawns.Spawn1.memory.source1path = Room.serializePath(creep.room.findPath(Game.spawns.Spawn1.pos, sources[1].pos, {ignoreCreeps:true}));
-    } else {
-      
     }
     // if creep is supposed to transfer energy to the spawn
     if (creep.memory.working == true) {
