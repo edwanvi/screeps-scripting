@@ -1,4 +1,5 @@
 var extrautils = require('extrautils');
+var roleJanitor = require('role.janitor');
 
 module.exports = {
   // a function to run the logic for this role
@@ -38,6 +39,8 @@ module.exports = {
         if(creep.transfer(targets[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
           creep.moveTo(targets[0], {reusePath:20});
         }
+      } else {
+          roleJanitor.run(creep);
       }
     }
     // if creep is supposed to harvest energy from source
