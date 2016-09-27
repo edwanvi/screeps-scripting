@@ -60,9 +60,9 @@ module.exports.loop = function () {
   }
 
   // maxiumum populations
-  const maxiumumNumberOfHarvesters = 5;
+  const maxiumumNumberOfHarvesters = 3;
   const maxiumumNumberOfUpgraders = 3;
-  const maxiumumNumberOfBuilders = 4;
+  const maxiumumNumberOfBuilders = 2;
   const maxiumumNumberOfJanitors = 2;
   const maxiumumNumberOfRemotes = 1;
   // count the number of creeps alive for each role
