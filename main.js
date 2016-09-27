@@ -37,25 +37,45 @@ module.exports.loop = function () {
     var creep = Game.creeps[name];
 
     // if creep is harvester, call harvester script
-    if (creep.memory.role == 'harvester') {
-      roleHarvester.run(creep);
+
+    switch (creep.memory.role) {
+      case 'harvester':
+        roleHarvester.run(creep);
+        break;
+      case 'upgrader':
+        roleUpgrader.run(creep);
+        break;
+      case 'builder':
+        roleBuilder.run(creep);
+        break;
+      case 'janitor':
+        roleJanitor.run(creep);
+        break;
+      case 'remoteminer':
+        roleremoteminer.run(creep);
+        break;
+      default:
+        // TODO: Make a role-less creep
+    }
+    /* if (creep.memory.role == 'harvester') {
+      //roleHarvester.run(creep);
     }
     // if creep is upgrader, call upgrader script
     else if (creep.memory.role == 'upgrader') {
-      roleUpgrader.run(creep);
+      //roleUpgrader.run(creep);
     }
     // if creep is builder, call builder script
     else if (creep.memory.role == 'builder') {
-      roleBuilder.run(creep);
+      //roleBuilder.run(creep);
     }
     // if creep is janitor, call janitor script
     else if (creep.memory.role == 'janitor') {
-      roleJanitor.run(creep);
+      //roleJanitor.run(creep);
     }
     // if creep is remote miner, call remote mining script.
     else if (creep.memory.role == 'remoteminer') {
-      roleremoteminer.run(creep);
-    }
+      //roleremoteminer.run(creep);
+    } */
   }
 
   // maxiumum populations
