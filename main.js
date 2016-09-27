@@ -57,40 +57,22 @@ module.exports.loop = function () {
       default:
         // TODO: Make a role-less creep
     }
-    // TODO: Remove this completely
-    /* if (creep.memory.role == 'harvester') {
-      //roleHarvester.run(creep);
-    }
-    // if creep is upgrader, call upgrader script
-    else if (creep.memory.role == 'upgrader') {
-      //roleUpgrader.run(creep);
-    }
-    // if creep is builder, call builder script
-    else if (creep.memory.role == 'builder') {
-      //roleBuilder.run(creep);
-    }
-    // if creep is janitor, call janitor script
-    else if (creep.memory.role == 'janitor') {
-      //roleJanitor.run(creep);
-    }
-    // if creep is remote miner, call remote mining script.
-    else if (creep.memory.role == 'remoteminer') {
-      //roleremoteminer.run(creep);
-    } */
   }
 
   // maxiumum populations
-  var maxiumumNumberOfHarvesters = 5;
-  var maxiumumNumberOfUpgraders = 3;
-  var maxiumumNumberOfBuilders = 4;
-  var maxiumumNumberOfJanitors = 2;
+  const maxiumumNumberOfHarvesters = 5;
+  const maxiumumNumberOfUpgraders = 3;
+  const maxiumumNumberOfBuilders = 4;
+  const maxiumumNumberOfJanitors = 2;
+  const maxiumumNumberOfRemotes = 1;
   // count the number of creeps alive for each role
   // _.sum will count the number of properties in Game.creeps filtered by the
-  //  arrow function, which checks for the creep being a harvester
+  //  arrow function, which checks for the creep being a harvester/janitor/etc
   var numberOfHarvesters = _.sum(Game.creeps, (c) => c.memory.role == 'harvester');
   var numberOfUpgraders = _.sum(Game.creeps, (c) => c.memory.role == 'upgrader');
   var numberOfBuilders = _.sum(Game.creeps, (c) => c.memory.role == 'builder');
   var numberOfJanitors = _.sum(Game.creeps, (c) => c.memory.role == 'janitor');
+  var numberOfRemotes = _.sum(Game.creeps, (c) => c.memory.role == 'remoteminer');
 
   var name = undefined;
 
@@ -116,8 +98,9 @@ module.exports.loop = function () {
     // try to spawn a janitor
     name = Game.spawns.Spawn1.createCreep(specs.janitorSpecs, undefined,
       {role: 'janitor', working: false});
-  } else {
-    // console.log("No creep spawned");
+  } else if (numberOfRemotes < maxiumumNumberOfRemotes) {
+    name = Game.spawns.Spawn1.createCreep(specs.harvesterSpecs, undefined,
+      {role: 'remoteminer', working: false});
   }
   // print name to console if spawning was a success
   // name > 0 would not work since string > 0 returns false
