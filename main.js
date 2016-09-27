@@ -57,6 +57,7 @@ module.exports.loop = function () {
       default:
         // TODO: Make a role-less creep
     }
+    // TODO: Remove this completely
     /* if (creep.memory.role == 'harvester') {
       //roleHarvester.run(creep);
     }
