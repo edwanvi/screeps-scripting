@@ -3,6 +3,7 @@ var roleHarvester = require('role.harvester');
 var roleUpgrader = require('role.upgrader');
 var roleBuilder = require('role.builder');
 var roleJanitor = require('role.janitor');
+const roleremoteminer = require('role.remoteminer');
 var specs = require('specs');
 
 module.exports.loop = function () {
@@ -13,7 +14,7 @@ module.exports.loop = function () {
       console.log('Clearing non-existing creep memory:', name);
     }
   }
-
+  // man the tower
   var tower = Game.getObjectById('57af8439d7470970440fa983');
   if (tower) {
     var closestDamagedStructure = tower.pos.findClosestByRange(FIND_STRUCTURES, {
@@ -30,34 +31,59 @@ module.exports.loop = function () {
   }
 
   // for every creep name in Game.creeps
+  // IDEA: Change this to a switch
   for (let name in Game.creeps) {
     // get the creep object
     var creep = Game.creeps[name];
 
     // if creep is harvester, call harvester script
-    if (creep.memory.role == 'harvester') {
-      roleHarvester.run(creep);
+
+    switch (creep.memory.role) {
+      case 'harvester':
+        roleHarvester.run(creep);
+        break;
+      case 'upgrader':
+        roleUpgrader.run(creep);
+        break;
+      case 'builder':
+        roleBuilder.run(creep);
+        break;
+      case 'janitor':
+        roleJanitor.run(creep);
+        break;
+      case 'remoteminer':
+        roleremoteminer.run(creep);
+        break;
+      default:
+        // TODO: Make a role-less creep
+    }
+    // TODO: Remove this completely
+    /* if (creep.memory.role == 'harvester') {
+      //roleHarvester.run(creep);
     }
     // if creep is upgrader, call upgrader script
     else if (creep.memory.role == 'upgrader') {
-      roleUpgrader.run(creep);
+      //roleUpgrader.run(creep);
     }
     // if creep is builder, call builder script
     else if (creep.memory.role == 'builder') {
-      roleBuilder.run(creep);
+      //roleBuilder.run(creep);
     }
     // if creep is janitor, call janitor script
     else if (creep.memory.role == 'janitor') {
-      roleJanitor.run(creep);
+      //roleJanitor.run(creep);
     }
+    // if creep is remote miner, call remote mining script.
+    else if (creep.memory.role == 'remoteminer') {
+      //roleremoteminer.run(creep);
+    } */
   }
 
-  // setup some minimum numbers for different roles
-  var minimumNumberOfHarvesters = 10;
-  var minimumNumberOfUpgraders = 3;
-  var minimumNumberOfBuilders = 5;
-  var minimumNumberOfJanitors = 1;
-
+  // maxiumum populations
+  var maxiumumNumberOfHarvesters = 5;
+  var maxiumumNumberOfUpgraders = 3;
+  var maxiumumNumberOfBuilders = 4;
+  var maxiumumNumberOfJanitors = 2;
   // count the number of creeps alive for each role
   // _.sum will count the number of properties in Game.creeps filtered by the
   //  arrow function, which checks for the creep being a harvester
@@ -69,37 +95,33 @@ module.exports.loop = function () {
   var name = undefined;
 
   // if not enough harvesters
-  if (numberOfHarvesters < minimumNumberOfHarvesters) {
+  if (numberOfHarvesters < maxiumumNumberOfHarvesters) {
     // try to spawn one
     name = Game.spawns.Spawn1.createCreep(specs.harvesterSpecs, undefined,
       {role: 'harvester', working: false});
   }
   // if not enough upgraders
-  else if (numberOfUpgraders < minimumNumberOfUpgraders) {
+  else if (numberOfUpgraders < maxiumumNumberOfUpgraders) {
     // try to spawn one
     name = Game.spawns.Spawn1.createCreep(specs.upgraderSpecs, undefined,
       {role: 'upgrader', working: false});
   }
   // if not enough builders
-  else if (numberOfBuilders < minimumNumberOfBuilders) {
+  else if (numberOfBuilders < maxiumumNumberOfBuilders) {
     // try to spawn one
     name = Game.spawns.Spawn1.createCreep(specs.builderSpecs, undefined,
       {role: 'builder', working: false});
   }
-  else if (numberOfJanitors < minimumNumberOfJanitors) {
+  else if (numberOfJanitors < maxiumumNumberOfJanitors) {
     // try to spawn a janitor
     name = Game.spawns.Spawn1.createCreep(specs.janitorSpecs, undefined,
       {role: 'janitor', working: false});
+  } else {
+    // console.log("No creep spawned");
   }
-  else {
-    // else try to spawn a builder
-    name = Game.spawns.Spawn1.createCreep(specs.builderSpecs, undefined,
-      {role: 'builder', working: false});
-  }
-
   // print name to console if spawning was a success
   // name > 0 would not work since string > 0 returns false
-  if (!(name < 0)) {
+  if (!(name < 0) && name != undefined) {
     console.log("Spawned new creep: " + name);
   }
 };

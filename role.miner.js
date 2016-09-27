@@ -31,7 +31,7 @@ module.exports = {
 			// now that we have a number, we need to start mining our energy source
 			var source = creep.memory.flag.pos.findClosestByRange(FIND_SOURCES);
 			if (creep.harvest(source) == ERR_NOT_IN_RANGE) {
-      	creep.moveTo(creep.memory.flag);
+      	creep.moveTo(creep.memory.flag, {reusePath:20});
       }
 		} else if (creep.carry.energy == creep.carryCapacity) {
 			// we're full captain!
@@ -45,11 +45,11 @@ module.exports = {
 				// case one we deposit in our container no problem
 				var creepContainer = Game.getObjectById(creep.memory.container_id);
 				if (creep.transfer(creepContainer, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-					creep.moveTo(creepContainer);
+					creep.moveTo(creepContainer, {reusePath:20});
 				} else if (creep.transfer(creepContainer, RESOURCE_ENERGY) == ERR_FULL) {
-				// case two: the container is full, so we put it in Spawn1
+				// case two: the container is full, so we ~~put it in Spawn1~~ complain about it
 					if (creep.transfer(Game.spawns.Spawn1, RESOURCE_ENERGY) ==  ERR_NOT_IN_RANGE) {
-						creep.moveTo(Game.spawns.Spawn1);
+						creep.say("I'm carrying too much stuff!", true);
 					}
 				}
 			}

@@ -1,4 +1,5 @@
 var extrautils = require('extrautils');
+var roleJanitor = require('role.janitor');
 
 module.exports = {
   // a function to run the logic for this role
@@ -17,7 +18,14 @@ module.exports = {
     if (creep.memory.energysource == null) {
       extrautils.newsource.run(creep);
     }
-
+    // make the spawn store the paths from spawn -> energy
+    var sources = creep.room.find(FIND_SOURCES);
+    if (Game.spawns.Spawn1.memory.source0path == null) {
+      Game.spawns.Spawn1.memory.source0path = Room.serializePath(creep.room.findPath(Game.spawns.Spawn1.pos, sources[0].pos, {ignoreCreeps:true}));
+    }
+    else if (Game.spawns.Spawn1.memory.source1path == null) {
+      Game.spawns.Spawn1.memory.source1path = Room.serializePath(creep.room.findPath(Game.spawns.Spawn1.pos, sources[1].pos, {ignoreCreeps:true}));
+    }
     // if creep is supposed to transfer energy to the spawn
     if (creep.memory.working == true) {
       // try to transfer energy, if the spawn is not in range
@@ -29,15 +37,17 @@ module.exports = {
         });
       if(targets.length > 0) {
         if(creep.transfer(targets[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-          creep.moveTo(targets[0]);
+          creep.moveTo(targets[0], {reusePath:20});
         }
+      } else {
+          roleJanitor.run(creep);
       }
     }
     // if creep is supposed to harvest energy from source
     else {
       var sources = creep.room.find(FIND_SOURCES)
       if (creep.harvest(sources[creep.memory.energysource]) == ERR_NOT_IN_RANGE) {
-        creep.moveTo(sources[creep.memory.energysource])
+        creep.moveTo(sources[creep.memory.energysource], {reusePath:20})
       }
     }
   }

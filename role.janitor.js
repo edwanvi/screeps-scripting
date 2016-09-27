@@ -21,7 +21,7 @@ module.exports = {
 
     if(creep.memory.working) {
       if(creep.repair(targets[0]) == ERR_NOT_IN_RANGE) {
-        creep.moveTo(targets[0]);
+        creep.moveTo(targets[0], {reusePath:30});
       } else if (targets.length == 0) {
         roleBuilder.run(creep);
       }
@@ -31,7 +31,7 @@ module.exports = {
       // try to harvest energy, if the source is not in range
       if (creep.harvest(source) == ERR_NOT_IN_RANGE) {
         // move towards the source
-        creep.moveTo(source);
+        creep.moveTo(source, {reusePath:20});
       }
     }
   }
