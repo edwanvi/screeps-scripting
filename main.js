@@ -3,6 +3,7 @@ var roleHarvester = require('role.harvester');
 var roleUpgrader = require('role.upgrader');
 var roleBuilder = require('role.builder');
 var roleJanitor = require('role.janitor');
+const roleremoteminer = require('role.remoteminer');
 var specs = require('specs');
 
 module.exports.loop = function () {
@@ -30,6 +31,7 @@ module.exports.loop = function () {
   }
 
   // for every creep name in Game.creeps
+  // IDEA: Change this to a switch
   for (let name in Game.creeps) {
     // get the creep object
     var creep = Game.creeps[name];
@@ -50,15 +52,14 @@ module.exports.loop = function () {
     else if (creep.memory.role == 'janitor') {
       roleJanitor.run(creep);
     }
+    // if creep is remote miner, call remote mining script.
+    else if (creep.memory.role == 'remoteminer') {
+      roleremoteminer.run(creep);
+    }
   }
 
-  // setup some minimum numbers for different roles
-  var minimumNumberOfHarvesters = 2;
-  var minimumNumberOfUpgraders = 1;
-  var minimumNumberOfBuilders = 2;
-  var minimumNumberOfJanitors = 1;
   // maxiumum populations
-  var maxiumumNumberOfHarvesters = 7;
+  var maxiumumNumberOfHarvesters = 5;
   var maxiumumNumberOfUpgraders = 3;
   var maxiumumNumberOfBuilders = 4;
   var maxiumumNumberOfJanitors = 2;
