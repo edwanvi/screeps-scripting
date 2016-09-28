@@ -22,38 +22,31 @@ module.exports = {
     var sources = creep.room.find(FIND_SOURCES);
     if (Game.spawns.Spawn1.memory.source0path == null) {
       Game.spawns.Spawn1.memory.source0path = Room.serializePath(creep.room.findPath(Game.spawns.Spawn1.pos, sources[0].pos, {ignoreCreeps:true}));
-    }
-    else if (Game.spawns.Spawn1.memory.source1path == null) {
+    } else if (Game.spawns.Spawn1.memory.source1path == null) {
       Game.spawns.Spawn1.memory.source1path = Room.serializePath(creep.room.findPath(Game.spawns.Spawn1.pos, sources[1].pos, {ignoreCreeps:true}));
     }
     // if creep is supposed to transfer energy to the spawn
     if (creep.memory.working == true) {
       // try to transfer energy, if the spawn is not in range
-      var structs = creep.room.find(FIND_STRUCTURES, {
+      var targets = creep.room.find(FIND_STRUCTURES, {
         filter: (structure) => {
-          return (structure.structureType == STRUCTURE_EXTENSION || structure.structureType == STRUCTURE_SPAWN) &&
-            structure.energy < structure.energyCapacity;
-          }
-        });
-      var towers = creep.room.find(FIND_STRUCTURES, {filter: (structure) => {return (structure.structureType == STRUCTURE_TOWER)}});
-      if (global.numberOfCreeps <= 4) {
-        var targets = towers.concat(structs);
-      } else {
-        var targets = structs;
-      }
+          return (structure.structureType == STRUCTURE_EXTENSION || structure.structureType == STRUCTURE_SPAWN /*|| structure.structureType == STRUCTURE_TOWER */) &&
+          structure.energy < structure.energyCapacity;
+        }
+      });
       if(targets.length > 0) {
         if(creep.transfer(targets[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-          creep.moveTo(targets[0], {reusePath:20});
+          creep.moveTo(targets[0], global.MOVE_TO_OPTS);
         }
       } else {
-          roleJanitor.run(creep);
+        roleJanitor.run(creep);
       }
     }
     // if creep is supposed to harvest energy from source
     else {
-      var sources = creep.room.find(FIND_SOURCES)
+      var sources = creep.room.find(FIND_SOURCES);
       if (creep.harvest(sources[creep.memory.energysource]) == ERR_NOT_IN_RANGE) {
-        creep.moveTo(sources[creep.memory.energysource], {reusePath:100});
+        creep.moveTo(sources[creep.memory.energysource], global.MOVE_TO_OPTS);
       }
     }
   }
