@@ -23,10 +23,11 @@ module.exports = {
 				creep.moveTo(Game.flags.remoteMining, {reusePath:50});
 			}
 		} else {
-			// take energy back to spawn, we're full!
-			if(creep.transfer(Game.spawns.Spawn1, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+			// take energy back to the tower, we're full!
+			var towers = Game.spawns.Spawn1.room.find(FIND_STRUCTURES, {filter: (structure) => {return (structure.structureType == STRUCTURE_TOWER)}});
+			if(towers.length > 0 && creep.transfer(towers[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
 				creep.moveTo(Game.spawns.Spawn1, {reusePath:50});
-			} else if (creep.transfer(Game.spawns.Spawn1, RESOURCE_ENERGY) == ERR_FULL) {
+			} else if (towers.length > 0 && creep.transfer(towers[0], RESOURCE_ENERGY) == ERR_FULL) {
 				// if the spawn if full, take it somewhere else.
 				var targets = creep.room.find(FIND_STRUCTURES, {
 	        filter: (structure) => {
