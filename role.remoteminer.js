@@ -2,7 +2,7 @@ const rolejanitor = require('role.janitor');
 
 module.exports = {
 	run: function (creep) {
-	//this role goes to a flag, mines around it, and deposits stuff at spawn.
+		//this role goes to a flag, mines around it, and deposits stuff at spawn.
 		if (creep.memory.working == true && creep.carry.energy == 0) {
     	// switch state
   		creep.memory.working = false;
@@ -17,10 +17,10 @@ module.exports = {
 			if (creep.room.name === Game.flags.remoteMining.pos.roomName) {
 				var sources = creep.room.find(FIND_SOURCES);
 	    	if (creep.harvest(sources[0]) == ERR_NOT_IN_RANGE) {
-	    		creep.moveTo(sources[0], {reusePath: 50});
+	    		creep.moveTo(sources[0], {reusePath: 50, ignoreCreeps:true});
 				}
   		} else {
-				creep.moveTo(Game.flags.remoteMining, {reusePath:50});
+				creep.moveTo(Game.flags.remoteMining, {reusePath:50, ignoreCreeps:true});
 			}
 		} else {
 			// take energy back to the tower, we're full!
@@ -31,7 +31,7 @@ module.exports = {
 				// if the spawn if full, take it somewhere else.
 				var targets = creep.room.find(FIND_STRUCTURES, {
 	        filter: (structure) => {
-	          return (structure.structureType == STRUCTURE_EXTENSION || structure.structureType == STRUCTURE_TOWER) &&
+	          return (structure.structureType == STRUCTURE_EXTENSION || structure.structureType == STRUCTURE_SPAWN) &&
 	            structure.energy < structure.energyCapacity;
 	          }
 	        });
