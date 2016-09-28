@@ -9,5 +9,5 @@
 
 module.exports.harvesterSpecs = [WORK, WORK, WORK, CARRY, MOVE, MOVE];
 module.exports.upgraderSpecs = [WORK, WORK, WORK, CARRY, MOVE, MOVE];
-module.exports.builderSpecs = [WORK, WORK, WORK, CARRY, CARRY, MOVE, MOVE];
+module.exports.builderSpecs = [WORK, WORK, WORK, CARRY, MOVE, MOVE];
 module.exports.janitorSpecs = [WORK, WORK, WORK, CARRY, CARRY, MOVE, MOVE];
