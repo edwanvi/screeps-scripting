@@ -17,10 +17,10 @@ module.exports = {
 			if (creep.room.name === Game.flags.remoteMining.pos.roomName) {
 				var sources = creep.room.find(FIND_SOURCES);
 	    	if (creep.harvest(sources[0]) == ERR_NOT_IN_RANGE) {
-	    		creep.moveTo(sources[0], {reusePath: 50, ignoreCreeps:true});
+	    		creep.moveTo(sources[0], global.MOVE_TO_OPTS);
 				}
   		} else {
-				creep.moveTo(Game.flags.remoteMining, {reusePath:50, ignoreCreeps:true});
+				creep.moveTo(Game.flags.remoteMining, global.MOVE_TO_OPTS);
 			}
 		} else {
 			// take energy back to the tower, we're full!

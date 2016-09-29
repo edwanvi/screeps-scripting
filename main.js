@@ -73,7 +73,7 @@ module.exports.loop = function () {
   const maxiumumNumberOfJanitors = 2;
   const maxiumumNumberOfRemotes = 1;
   const maxiumumNumberOfAttackers = 4;
-  const maxiumumNumberOfDismantlers = 1;
+  const maxiumumNumberOfDismantlers = 2;
   // count the number of creeps alive for each role
   // _.sum will count the number of properties in Game.creeps filtered by the
   //  arrow function, which checks for the creep being a harvester/janitor/etc
