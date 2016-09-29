@@ -106,13 +106,13 @@ module.exports.loop = function () {
   }
   // if not enough upgraders
   else if (numberOfUpgraders < maxiumumNumberOfUpgraders) {
-    // try to spawn one
+    // try to spawn an upgrader
     name = Game.spawns.Spawn1.createCreep(specs.upgraderSpecs, undefined,
       {role: 'upgrader', working: false});
   }
   // if not enough builders
   else if (numberOfBuilders < maxiumumNumberOfBuilders) {
-    // try to spawn one
+    // try to spawn a builder
     name = Game.spawns.Spawn1.createCreep(specs.builderSpecs, undefined,
       {role: 'builder', working: false});
   }
@@ -121,6 +121,7 @@ module.exports.loop = function () {
     name = Game.spawns.Spawn1.createCreep(specs.janitorSpecs, undefined,
       {role: 'janitor', working: false});
   } else if (numberOfRemotes < maxiumumNumberOfRemotes) {
+    // try to spawn a remote miner
     name = Game.spawns.Spawn1.createCreep(specs.harvesterSpecs, undefined,
       {role: 'remoteminer', working: false});
   }
@@ -128,5 +129,6 @@ module.exports.loop = function () {
   // name > 0 would not work since string > 0 returns false
   if (!(name < 0) && name != undefined) {
     console.log("Spawned new creep: " + name);
+    console.log("New creep role: " + name.memory.role);
   }
 };
