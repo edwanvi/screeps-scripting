@@ -129,6 +129,7 @@ module.exports.loop = function () {
   // name > 0 would not work since string > 0 returns false
   if (!(name < 0) && name != undefined) {
     console.log("Spawned new creep: " + name);
-    console.log("New creep role: " + name.memory.role);
+    // TODO: MAKE THIS WORK
+    // console.log("New creep role: " + name.memory.role);
   }
 };
