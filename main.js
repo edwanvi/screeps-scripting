@@ -4,6 +4,8 @@ const roleUpgrader = require('role.upgrader');
 const roleBuilder = require('role.builder');
 const roleJanitor = require('role.janitor');
 const roleremoteminer = require('role.remoteminer');
+const roleattacker = require('role.attacker');
+const roledismantle = require('role.dismantler');
 const specs = require('specs');
 
 module.exports.loop = function () {
@@ -34,13 +36,9 @@ module.exports.loop = function () {
   }
 
   // for every creep name in Game.creeps
-  // IDEA: Change this to a switch
   for (let name in Game.creeps) {
     // get the creep object
     var creep = Game.creeps[name];
-
-    // if creep is harvester, call harvester script
-
     switch (creep.memory.role) {
       case 'harvester':
         roleHarvester.run(creep);
@@ -57,6 +55,12 @@ module.exports.loop = function () {
       case 'remoteminer':
         roleremoteminer.run(creep);
         break;
+      case 'attacker':
+        roleattacker.run(creep);
+        break;
+      case 'dismantle':
+        roledismantle.run(creep);
+        break;
       default:
         // TODO: Make a role-less creep
     }
@@ -68,21 +72,34 @@ module.exports.loop = function () {
   const maxiumumNumberOfBuilders = 2;
   const maxiumumNumberOfJanitors = 2;
   const maxiumumNumberOfRemotes = 1;
+  const maxiumumNumberOfAttackers = 4;
+  const maxiumumNumberOfDismantlers = 1;
   // count the number of creeps alive for each role
   // _.sum will count the number of properties in Game.creeps filtered by the
   //  arrow function, which checks for the creep being a harvester/janitor/etc
-  var numberOfHarvesters = _.sum(Game.creeps, (c) => c.memory.role == 'harvester');
-  var numberOfUpgraders = _.sum(Game.creeps, (c) => c.memory.role == 'upgrader');
-  var numberOfBuilders = _.sum(Game.creeps, (c) => c.memory.role == 'builder');
-  var numberOfJanitors = _.sum(Game.creeps, (c) => c.memory.role == 'janitor');
-  var numberOfRemotes = _.sum(Game.creeps, (c) => c.memory.role == 'remoteminer');
-
+  const numberOfHarvesters = _.sum(Game.creeps, (c) => c.memory.role === 'harvester');
+  const numberOfUpgraders = _.sum(Game.creeps, (c) => c.memory.role === 'upgrader');
+  const numberOfBuilders = _.sum(Game.creeps, (c) => c.memory.role === 'builder');
+  const numberOfJanitors = _.sum(Game.creeps, (c) => c.memory.role === 'janitor');
+  const numberOfRemotes = _.sum(Game.creeps, (c) => c.memory.role === 'remoteminer');
+  const numberOfAttackers = _.sum(Game.creeps, (c) => c.memory.role === 'attacker');
+  const numberOfDismantlers = _.sum(Game.creeps, (c) => c.memory.role === 'dismantle')
+  // global var for number of creeps
   global.numberOfCreeps = numberOfRemotes + numberOfJanitors + numberOfBuilders + numberOfUpgraders + numberOfHarvesters;
 
   var name = undefined;
-
+  // attackers will take priority
+  if (Game.spawns.Spawn1.memory.invading && numberOfAttackers < maxiumumNumberOfAttackers) {
+    name = Game.spawns.Spawn1.createCreep(specs.attackerSpecs, undefined,
+      {role: 'attacker'});
+  }
+  // dismantlers are second to attackers
+  else if (Game.spawns.Spawn1.memory.invading && numberOfDismantlers < maxiumumNumberOfDismantlers) {
+    name = Game.spawns.Spawn1.createCreep(specs.attackerSpecs, undefined,
+      {role: 'dismantle'});
+  }
   // if not enough harvesters
-  if (numberOfHarvesters < maxiumumNumberOfHarvesters) {
+  else if (numberOfHarvesters < maxiumumNumberOfHarvesters) {
     // try to spawn one
     name = Game.spawns.Spawn1.createCreep(specs.harvesterSpecs, undefined,
       {role: 'harvester', working: false});
