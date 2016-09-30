@@ -3,15 +3,20 @@ const rolejanitor = require('role.janitor');
 module.exports = {
 	run: function (creep) {
 		//this role goes to a flag, mines around it, and deposits stuff at spawn.
-		if (creep.memory.working == true && creep.carry.energy == 0) {
+		if (creep.memory.working && creep.carry.energy == 0) {
     	// switch state
   		creep.memory.working = false;
   	}
   	// if creep is harvesting energy but is full
-  	else if (creep.memory.working == false && creep.carry.energy == creep.carryCapacity) {
+  	else if (creep.memory.working === false && creep.carry.energy == creep.carryCapacity) {
     	// switch state
   		creep.memory.working = true;
   	}
+		// manually spawned creep w/no memory
+    else if (creep.memory.working == undefined) {
+      creep.memory.working = false;
+    }
+
 		// if we need to harvest energy
   	if (!creep.memory.working) {
 			if (creep.room.name === Game.flags.remoteMining.pos.roomName) {
@@ -31,13 +36,13 @@ module.exports = {
 				// if the spawn if full, take it somewhere else.
 				var targets = creep.room.find(FIND_STRUCTURES, {
 	        filter: (structure) => {
-	          return (structure.structureType == STRUCTURE_EXTENSION || structure.structureType == STRUCTURE_SPAWN) &&
+	          return (structure.structureType == STRUCTURE_EXTENSION || structure.structureType == STRUCTURE_SPAWN  || structure.structureType == STRUCTURE_STORAGE) &&
 	            structure.energy < structure.energyCapacity;
 	          }
 	        });
 	      if(targets.length > 0) {
 	        if(creep.transfer(targets[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-	          creep.moveTo(targets[0], {reusePath:50});
+	          creep.moveTo(targets[0], global.MOVE_TO_OPTS);
 	      	}
 				} else {
 					// console.log("how the f*ck");
