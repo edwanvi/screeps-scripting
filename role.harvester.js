@@ -14,10 +14,15 @@ module.exports = {
       // switch state
       creep.memory.working = true;
     }
+    // manually spawned creep w/no memory
+    else if (creep.memory.working == undefined) {
+      creep.memory.working = false;
+    }
     // get an energysource if we don't have one
     if (creep.memory.energysource == null) {
       extrautils.newsource.run(creep);
     }
+    
     // make the spawn store the paths from spawn -> energy
     var sources = creep.room.find(FIND_SOURCES);
     if (Game.spawns.Spawn1.memory.source0path == null) {
@@ -28,9 +33,9 @@ module.exports = {
     // if creep is supposed to transfer energy to the spawn
     if (creep.memory.working == true) {
       // try to transfer energy, if the spawn is not in range
-      var targets = creep.room.find(FIND_STRUCTURES, {
+      const targets = creep.room.find(FIND_STRUCTURES, {
         filter: (structure) => {
-          return (structure.structureType == STRUCTURE_EXTENSION || structure.structureType == STRUCTURE_SPAWN /*|| structure.structureType == STRUCTURE_TOWER */) &&
+          return (structure.structureType == STRUCTURE_EXTENSION || structure.structureType == STRUCTURE_SPAWN || structure.structureType == STRUCTURE_STORAGE /*|| structure.structureType == STRUCTURE_TOWER */) &&
           structure.energy < structure.energyCapacity;
         }
       });
