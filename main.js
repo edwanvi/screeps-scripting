@@ -31,6 +31,14 @@ module.exports.loop = function () {
 
     var closestHostile = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
     if(closestHostile) {
+      // if not invading, activate defense systems (aka self-invasion)
+      if (!Game.spawns.Spawn1.memory.invading) {
+        console.log("Hostiles detected: calling invasion on self.");
+        Game.flags.attack.setPosition(Game.spawns.Spawn1.pos);
+        Game.spawns.Spawn1.memory.invading = true;
+      }
+    // already invading somewhere else
+    } else if (Game.spawns.Spawn1.memory.invading) {
       tower.attack(closestHostile);
     }
   }
