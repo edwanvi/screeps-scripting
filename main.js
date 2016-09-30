@@ -19,6 +19,7 @@ module.exports.loop = function () {
   // man the tower
   var tower = Game.getObjectById('57eb00a1ec14fa4651855289');
   if (tower) {
+    // ignore roads, walls, and ramparts
     var closestDamagedStructure = tower.pos.findClosestByRange(FIND_STRUCTURES, {
       filter: (structure) => structure.hits < structure.hitsMax
       && structure.structureType != STRUCTURE_ROAD
@@ -97,12 +98,12 @@ module.exports.loop = function () {
 
   var name = undefined;
   // attackers will take priority
-  if (Game.spawns.Spawn1.memory.invading && numberOfAttackers < maxiumumNumberOfAttackers) {
+  if (Game.spawns.Spawn1.memory.invading && numberOfAttackers < maxiumumNumberOfAttackers && numberOfHarvesters > 2) {
     name = Game.spawns.Spawn1.createCreep(specs.attackerSpecs, undefined,
       {role: 'attacker'});
   }
   // dismantlers are second to attackers
-  else if (Game.spawns.Spawn1.memory.invading && numberOfDismantlers < maxiumumNumberOfDismantlers) {
+  else if (Game.spawns.Spawn1.memory.invading && numberOfDismantlers < maxiumumNumberOfDismantlers && numberOfHarvesters > 2) {
     name = Game.spawns.Spawn1.createCreep(specs.attackerSpecs, undefined,
       {role: 'dismantle'});
   }
