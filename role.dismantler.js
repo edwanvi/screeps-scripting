@@ -7,10 +7,11 @@ module.exports = {
 		if (Game.spawns.Spawn1.memory.invading) {
 			if (creep.room.name === Game.flags.attack.pos.roomName && creep.pos.inRangeTo(Game.flags.attack.pos, 30)) {
 				var targets = creep.room.find(FIND_HOSTILE_STRUCTURES);
+				targets.sort((a,b) => a.hits - b.hits);
 				if (targets.length > 0) {
     			if (creep.dismantle(targets[0]) === ERR_NOT_IN_RANGE && targets[0].structureType != STRUCTURE_CONTROLLER) {
         		creep.moveTo(targets[0]);
-    			} else if (targets[0].structureType == STRUCTURE_CONTROLLER) {
+    			} else if (targets[0].structureType === STRUCTURE_CONTROLLER) {
 						if (creep.dismantle(targets[1]) === ERR_NOT_IN_RANGE) {
 	        		creep.moveTo(targets[1]);
 	    			}
@@ -18,7 +19,7 @@ module.exports = {
 				} else {
 					// room cleanup done!
 					roleremoteminer.run(creep);
-					// IDEA: Auto-stop invasions
+					// TODO: Auto-stop invasions as this nearly killed the colony
 				}
   		} else {
 				creep.moveTo(Game.flags.attack);

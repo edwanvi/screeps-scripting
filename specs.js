@@ -12,6 +12,7 @@ module.exports.upgraderSpecs = [WORK, WORK, WORK, CARRY, CARRY, MOVE, MOVE];
 module.exports.builderSpecs = [WORK, WORK, WORK, CARRY, CARRY, MOVE, MOVE];
 module.exports.janitorSpecs = [WORK, WORK, WORK, CARRY, CARRY, MOVE, MOVE];
 module.exports.attackerSpecs = [RANGED_ATTACK, MOVE, MOVE, CARRY, WORK];
+module.exports.cheapAttackerSpecs = [TOUGH,MOVE,WORK,CARRY,ATTACK];
 // gloabl values
 global.REUSE_PATH_TICKS = 50;
 global.MOVE_TO_OPTS = {reusePath: global.REUSE_PATH_TICKS, ignoreCreeps:true, maxOps: 1000};

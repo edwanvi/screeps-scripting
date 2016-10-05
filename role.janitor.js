@@ -17,12 +17,12 @@ module.exports = {
     else if (creep.memory.working == undefined) {
       creep.memory.working = false;
     }
-    
+
     var targets = creep.room.find(FIND_STRUCTURES,
       {filter: object => object.hits < object.hitsMax});
     // sort by dmg
     // TODO: USE A FASTER ALGORITHM
-    targets.sort((a,b) => a.hits - b.hits);
+    // targets.sort((a,b) => a.hits - b.hits);
 
     if(creep.memory.working) {
       if(creep.repair(targets[0]) == ERR_NOT_IN_RANGE) {
