@@ -1,77 +1,30 @@
+import { ExUt } from "../extrautils";
+
 export class RoleUpgrader {
-  public static run(creep: Creep) {
-    if (creep.memory["working"] && creep.carry.energy == 0) {
-      // switch state
-      creep.memory["working"] = false;
-    }
-    // if creep is harvesting energy but is full
-    else if (!creep.memory["working"] && creep.carry.energy == creep.carryCapacity) {
-      // switch state
-      creep.memory["working"] = true;
-    }
+    public static run(creep: Creep) {
+        if (creep.memory["working"] && creep.carry.energy == 0) {
+            // switch state
+            creep.memory["working"] = false;
+        } else if (!creep.memory["working"] && creep.carry.energy == creep.carryCapacity) {
+            // switch state
+            creep.memory["working"] = true;
+        }
 
-    // if creep is supposed to transfer energy to the controller
-    if (creep.memory["working"]) {
-      // instead of upgradeController we could also use `if (creep.transfer(creep.room.controller, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE)`
-
-      // try to upgrade the controller
-      if (creep.room.controller && creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE) {
-        // if not in range, move towards the controller
-        creep.moveTo(creep.room.controller, { reusePath: 20 });
-      }
+        if (creep.memory["working"]) {
+            if (creep.room.controller && creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE) {
+                creep.moveTo(creep.room.controller, { reusePath: 20 });
+            }
+        } else {
+            if (creep.memory["energysource"] == null) {
+                ExUt.newSource(creep);
+            }
+            var source = ExUt.getSources(Game.spawns["Spawn1"])[creep.memory["energysource"]];
+            // try to harvest energy, if the source is not in range
+            if (creep.harvest(source) == ERR_NOT_IN_RANGE) {
+                // move towards the source
+                creep.moveTo(source, { reusePath: 20 });
+            }
+        }
     }
-    // if creep is supposed to harvest energy from source
-    else {
-      // find closest source
-      // TODO: Store this to cut CPU
-      var source = creep.pos.findClosestByRange(FIND_SOURCES);
-      // try to harvest energy, if the source is not in range
-      if (creep.harvest(source) == ERR_NOT_IN_RANGE) {
-        // move towards the source
-        creep.moveTo(source, { reusePath: 20 });
-      }
-    }
-  }
 }
 
-
-/* module.exports = {
-  // a function to run the logic for this role
-  run: function(creep) {
-    // if creep is bringing energy to the controller but has no energy left
-    if (creep.memory.working && creep.carry.energy == 0) {
-      // switch state
-      creep.memory.working = false;
-    }
-    // if creep is harvesting energy but is full
-    else if (creep.memory.working === false && creep.carry.energy == creep.carryCapacity) {
-      // switch state
-      creep.memory.working = true;
-    }
-    // manually spawned creep w/no memory
-    else if (creep.memory.working == undefined) {
-      creep.memory.working = false;
-    }
-
-    // if creep is supposed to transfer energy to the controller
-    if (creep.memory.working == true) {
-      // instead of upgradeController we could also use `if (creep.transfer(creep.room.controller, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE)`
-      // try to upgrade the controller
-      if (creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE) {
-        // if not in range, move towards the controller
-        creep.moveTo(creep.room.controller, {reusePath:50});
-      }
-    }
-    // if creep is supposed to harvest energy from source
-    else {
-      // find closest source
-      // TODO: Store this to cut CPU
-      var source = creep.pos.findClosestByRange(FIND_SOURCES);
-      // try to harvest energy, if the source is not in range
-      if (creep.harvest(source) == ERR_NOT_IN_RANGE) {
-        // move towards the source
-        creep.moveTo(source, {reusePath:50});
-      }
-    }
-  }
-}; */

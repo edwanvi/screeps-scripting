@@ -1,5 +1,5 @@
-var roleUpgrader = require('role.upgrader');
-var extrautils = require("extrautils");
+import { RoleUpgrader } from "role/upgrader";
+import { ExtraUtils } from "../extrautils";
 
 export class RoleBuilder {
     public static run(creep: Creep) {
@@ -14,8 +14,8 @@ export class RoleBuilder {
             creep.memory["working"] = true;
         }
 
-        if (creep.memory.energysource == null) {
-            extrautils.newsource.run(creep);
+        if (creep.memory["energysource"] == null) {
+            ExtraUtils.newSource(creep);
         }
 
         // if creep is supposed to complete a constructionSite
@@ -24,23 +24,18 @@ export class RoleBuilder {
             var sites = creep.room.find(FIND_CONSTRUCTION_SITES);
             if (sites.length > 0) {
                 if (creep.build(sites[0]) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(sites[0], { reusePath: 20 });
+                    creep.moveTo(sites[0], {reusePath: 20});
                 }
-            }
-            // if no constructionSite is found
-            else {
+            } else {
                 // go upgrading the controller
-                roleUpgrader.run(creep);
+                RoleUpgrader.run(creep);
             }
-        }
-        // if creep is supposed to harvest energy from source
-        else {
-            // find closest source
-            var source = creep.pos.findClosestByRange(FIND_SOURCES);
+        } else {
+            var sources = ExtraUtils.getSources(Game.spawns["Spawn1"]);
             // try to harvest energy, if the source is not in range
-            if (creep.harvest(source) == ERR_NOT_IN_RANGE) {
+            if (creep.harvest(sources[creep.memory["energysource"]]) == ERR_NOT_IN_RANGE) {
                 // move towards the source
-                creep.moveTo(source, { reusePath: 20 });
+                creep.moveTo(sources[creep.memory["energysource"]])
             }
         }
     }
