@@ -59,36 +59,37 @@ export const loop = ErrorMapper.wrapLoop(function () {
   var newName: ScreepsReturnCode;
   var randEnd = _.random(1, 100);
   var stringPart: string;
+  var room = Game.spawns["Spawn1"].room;
 
   // if not enough harvesters
   if (numberOfHarvesters < maxiumumNumberOfHarvesters) {
     // try to spawn one
-    newName = Game.spawns["Spawn1"].spawnCreep(specs.harvesterSpecs, "harv_" + randEnd,
+    newName = Game.spawns["Spawn1"].spawnCreep(specs.getWorkerSpecs(room), "harv_" + randEnd,
       { memory: { role: 'harvester', working: false } });
     stringPart = "harv_";
   }
   // if not enough upgraders
   else if (numberOfUpgraders < maxiumumNumberOfUpgraders) {
     // try to spawn one
-    newName = Game.spawns["Spawn1"].spawnCreep(specs.upgraderSpecs, "up_" + randEnd,
+    newName = Game.spawns["Spawn1"].spawnCreep(specs.getWorkerSpecs(room), "up_" + randEnd,
       { memory: { role: 'upgrader', working: false } });
     stringPart = "up_";
   }
   // if not enough builders
   else if (numberOfBuilders < maxiumumNumberOfBuilders) {
     // try to spawn one
-    newName = Game.spawns["Spawn1"].spawnCreep(specs.builderSpecs, "build_" + randEnd,
+    newName = Game.spawns["Spawn1"].spawnCreep(specs.getWorkerSpecs(room), "build_" + randEnd,
       { memory: { role: 'builder', working: false } });
     stringPart = "build_";
   }
   else if (numberOfJanitors < maxiumumNumberOfJanitors) {
     // try to spawn a janitor
-    newName = Game.spawns["Spawn1"].spawnCreep(specs.janitorSpecs, "jan_" + randEnd,
+    newName = Game.spawns["Spawn1"].spawnCreep(specs.getWorkerSpecs(room), "jan_" + randEnd,
       { memory: { role: 'janitor', working: false } });
     stringPart = "jan_";
   } else {
     // console.log("No creep spawned");
-    newName = Game.spawns["Spawn1"].spawnCreep(specs.upgraderSpecs, "up_" + randEnd,
+    newName = Game.spawns["Spawn1"].spawnCreep(specs.getWorkerSpecs(room), "up_" + randEnd,
       { memory: { role: 'upgrader', working: false } });
     stringPart = "up_";
   }
