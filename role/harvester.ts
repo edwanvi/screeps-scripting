@@ -17,9 +17,12 @@ export class RoleHarvester {
         if (creep.memory["working"]) {
             // try to transfer energy, if the spawn is not in range
             var targets = creep.room.find(FIND_STRUCTURES, {
-                filter: (structure) => {
-                    return (structure.structureType == STRUCTURE_EXTENSION || structure.structureType == STRUCTURE_SPAWN || structure.structureType == STRUCTURE_TOWER) &&
-                    structure.energy < structure.energyCapacity;
+                filter: function(s) {
+                    if (s.structureType == STRUCTURE_TOWER) {
+                        return s.energy / s.energyCapacity <= 0.5;
+                    } else {
+                        return (s.structureType == STRUCTURE_EXTENSION || s.structureType == STRUCTURE_SPAWN) && s.energy < s.energyCapacity;
+                    }
                 }
             });
             if (targets.length > 0) {
