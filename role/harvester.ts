@@ -20,6 +20,8 @@ export class RoleHarvester {
                 filter: function(s) {
                     if (s.structureType == STRUCTURE_TOWER) {
                         return s.energy / s.energyCapacity <= 0.5;
+                    } else if (s.structureType == STRUCTURE_STORAGE) {
+                        return s.store[RESOURCE_ENERGY] < Math.pow(10, 4);
                     } else {
                         return (s.structureType == STRUCTURE_EXTENSION || s.structureType == STRUCTURE_SPAWN) && s.energy < s.energyCapacity;
                     }
