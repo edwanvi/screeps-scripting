@@ -9,7 +9,7 @@ export class RoleDefender {
 
     public static run(creep: Creep) {
         if (RoleDefender.hostiles.length > 0) {
-            if (creep.attack(RoleDefender.hostiles[0])) {
+            if (creep.attack(RoleDefender.hostiles[0]) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(RoleDefender.hostiles[0]);
             }
         } else {
