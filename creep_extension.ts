@@ -2,7 +2,7 @@ export class ExtendedCreep extends Creep {
     public getEnergy(useContainers: boolean, useSources: boolean) {
         let container;
         // if the Creep should look for containers
-        if (useContainer) {
+        if (useContainers) {
             // find closest container
             container = this.pos.findClosestByPath(FIND_STRUCTURES, {
                 filter: s => (s.structureType == STRUCTURE_CONTAINER || s.structureType == STRUCTURE_STORAGE) &&
@@ -18,7 +18,8 @@ export class ExtendedCreep extends Creep {
             }
         }
         // if no container was found and the Creep should look for Sources
-        if (container == undefined && useSource) {
+        // TODO: Respect source in memory
+        if (container == undefined && useSources) {
             // find closest source
             var source = this.pos.findClosestByPath(FIND_SOURCES_ACTIVE);
 
