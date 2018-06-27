@@ -14,8 +14,14 @@ export class RoleJanitor {
       // switch state
       creep.memory["working"] = true;
     }
-    var targets = creep.room.find(FIND_STRUCTURES,
-      {filter: object => object.hits < object.hitsMax});
+    var targets;
+    if (Game.getObjectById(Game.spawns["Spawn1"].memory["towerId"])) {
+        targets = creep.room.find(FIND_STRUCTURES,
+            {filter: object => object.hits < object.hitsMax && object.structureType != STRUCTURE_RAMPART});
+    } else {
+        targets = creep.room.find(FIND_STRUCTURES,
+            {filter: object => object.hits < object.hitsMax});
+    }
     // sort by dmg
     // TODO: USE A FASTER ALGORITHM
     targets.sort((a,b) => a.hits - b.hits);

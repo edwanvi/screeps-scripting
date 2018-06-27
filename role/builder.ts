@@ -20,7 +20,6 @@ export class RoleBuilder {
 
         // if creep is supposed to complete a constructionSite
         if (creep.memory["working"]) {
-            // find closest constructionSite
             var sites = creep.room.find(FIND_CONSTRUCTION_SITES);
             if (sites.length > 0) {
                 if (creep.build(sites[0]) == ERR_NOT_IN_RANGE) {

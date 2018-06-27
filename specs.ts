@@ -1,15 +1,16 @@
-/*
- * Module code goes here. Use 'module.exports' to export things:
- * module.exports.thing = 'a thing';
- *
- * You can import it from another modules like this:
- * var mod = require('specs');
- * mod.thing == 'a thing'; // true
- */
+const cheapAllPurpose = [WORK, CARRY, MOVE];
+const tier2Creep = [WORK, WORK, CARRY, MOVE];
+const topTier = [WORK, WORK, WORK, CARRY, CARRY, MOVE, MOVE];
 
-export const harvesterSpecs = [WORK, WORK, WORK, CARRY, CARRY, MOVE, MOVE];
-export const upgraderSpecs = [WORK, WORK, WORK, CARRY, CARRY, MOVE, MOVE];
-export const builderSpecs = [WORK, WORK, WORK, CARRY, CARRY, MOVE, MOVE];
-export const janitorSpecs = [WORK, WORK, WORK, CARRY, CARRY, MOVE, MOVE];
+export function getWorkerSpecs(room: Room) {
+    if (room.energyCapacityAvailable <= 300) {
+        return cheapAllPurpose;
+    } else if (room.energyCapacityAvailable <= 550) {
+        return tier2Creep;
+    } else {
+        return topTier;
+    }
+}
+
 export const attackerSpecs = [RANGED_ATTACK, MOVE, MOVE, CARRY, WORK];
 export const cheapAttackerSpecs = [TOUGH,MOVE,WORK,CARRY,ATTACK];
