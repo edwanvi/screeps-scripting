@@ -24,6 +24,9 @@ export class RoleTruck {
                 }
             }
         } else {
+            if (creep.memory["containerId"] == undefined) {
+                RoleTruck.setContainer(creep);
+            }
             let container = Game.getObjectById(creep.memory["containerId"]);
             
             if (container == undefined) {
@@ -36,5 +39,10 @@ export class RoleTruck {
                 }
             }
         }
+    }
+
+    private static setContainer(c: Creep) {
+        var containers = Game.spawns["Spawn1"].memory["containers"];
+        c.memory["containerId"] = containers[Math.round(Math.random())];
     }
 }
