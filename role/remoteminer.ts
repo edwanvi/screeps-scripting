@@ -27,19 +27,20 @@ export class RemoteMiner {
         } else {
             // take energy back to spawn, we're full!
             if (creep.room.name == creep.memory["homeRoom"]) {
-                var structure = creep.room.find(FIND_MY_STRUCTURES, {
-                    filter: function (s) {
-                        if (s.structureType == STRUCTURE_TOWER) {
-                            return !s.room.memory["towerWorking"];
-                        }
-                        return (s.structureType == STRUCTURE_EXTENSION ||
-                            s.structureType == STRUCTURE_SPAWN) &&
-                            s.energy < s.energyCapacity;
-                    }
-                })[0];
-
-                if (structure == undefined && creep.room.storage != undefined) {
+                var structure;
+                if (creep.room.storage != undefined) {
                     structure = creep.room.storage;
+                } else {
+                    structure = creep.room.find(FIND_MY_STRUCTURES, {
+                        filter: function (s) {
+                            if (s.structureType == STRUCTURE_TOWER) {
+                                return !s.room.memory["towerWorking"];
+                            }
+                            return (s.structureType == STRUCTURE_EXTENSION ||
+                                s.structureType == STRUCTURE_SPAWN) &&
+                                s.energy < s.energyCapacity;
+                        }
+                    })[0];
                 }
                 // room.storage is sometimes null too!
                 if (structure != undefined) {
