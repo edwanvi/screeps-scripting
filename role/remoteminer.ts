@@ -1,4 +1,5 @@
 import { RoleTruck } from "./truck";
+import { RoleUpgrader } from "./upgrader";
 
 export class RemoteMiner {
     public static run(creep: Creep) {
@@ -43,8 +44,11 @@ export class RemoteMiner {
                 // room.storage is sometimes null too!
                 if (structure != undefined) {
                     if (creep.transfer(structure, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                        creep.moveTo(structure, { reusePath: 20, ignoreCreeps: true });
+                        creep.moveTo(structure, { reusePath: 20 });
                     }
+                } else {
+                    // work that controller bby
+                    RoleUpgrader.run(creep);
                 }
             } else {
                 creep.moveTo(new RoomPosition(25, 25, creep.memory["homeRoom"]));
