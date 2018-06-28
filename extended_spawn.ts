@@ -1,11 +1,12 @@
 export class ExtendedSpawn {
     // order dictates spawning priority
-    private static listOfRoles = ["truck", "upgrader", "builder", "defense", "janitor", "remoteminer", "harvester"];
+    private static listOfRoles = ["truck", "upgrader", "builder", "remoteminer", "janitor", "defense", "harvester"];
     private static minCreeps: { [role: string]: number } = {
         "truck": 2,
         "builder": 4,
         "janitor": 2,
         "upgrader": 3,
+        "remoteminer": 1,
         "harvester": 0
     };
 
@@ -16,7 +17,11 @@ export class ExtendedSpawn {
         let census: { [role: string]: number } = {};
         for (let i = 0; i < ExtendedSpawn.listOfRoles.length; i++) {
             let role = ExtendedSpawn.listOfRoles[i];
-            census[role] = _.sum(creepsInRoom, c => c.memory["role"] == role ? 1 : 0);
+            if (!(role == "remoteminer")) {
+                census[role] = _.sum(creepsInRoom, c => c.memory["role"] == role ? 1 : 0);
+            } else {
+                census[role] = _.sum(Game.creeps, c => c.memory["role"] == role ? 1 : 0);
+            }
         }
         census["miner"] = _.sum(creepsInRoom, c => c.memory["role"] == "miner" ? 1 : 0);
 
@@ -28,7 +33,7 @@ export class ExtendedSpawn {
         if (census['harvester'] == 0 && census['truck'] == 0) {
             if (census['miner'] > 0 ||
                 (room.storage != undefined && room.storage.store[RESOURCE_ENERGY] >= 150 + 550)) {
-                name = ExtendedSpawn.createTruck(spawn, 150);
+                name = ExtendedSpawn.createTruck(spawn, 150, "");
             } else {
                 // create solo harvester
                 name = ExtendedSpawn.createCustom(spawn, room.energyAvailable, 'harvester', "hrv_");
@@ -51,6 +56,17 @@ export class ExtendedSpawn {
                     }
                 }
             }
+            let containers = room.find(FIND_STRUCTURES, {
+                filter: function(s) {
+                    return s.structureType == STRUCTURE_CONTAINER;
+                }
+            });
+            for (let container of containers) {
+                if (!_.some(creepsInRoom, c => c.memory["role"] == "truck" && c.memory["containerId"] == container.id)) {
+                    name = ExtendedSpawn.createTruck(spawn, 350, container.id);
+                    break;
+                }
+            }
         }
 
         if (name == undefined) {
@@ -59,9 +75,9 @@ export class ExtendedSpawn {
                 let role = ExtendedSpawn.listOfRoles[i];
                 if (census[role] < ExtendedSpawn.minCreeps[role]) {
                     if (role == "truck") {
-                        name = ExtendedSpawn.createTruck(spawn, 150);
+                        name = ExtendedSpawn.createTruck(spawn, 150, "");
                     } else {
-                        name = ExtendedSpawn.createCustom(spawn, energyMax, role, role.replace(/[aeiouy]/gi, ""));
+                        name = ExtendedSpawn.createCustom(spawn, Math.floor(energyMax / 2), role, role.replace(/[aeiouy]/gi, ""));
                     }
                     break;
                 }
@@ -73,7 +89,7 @@ export class ExtendedSpawn {
         }
     }
 
-    private static createTruck(spawn: StructureSpawn, energy: number) {
+    private static createTruck(spawn: StructureSpawn, energy: number, sourceId: string) {
         // CARRY = MOVE * 2, limited such that MOVE + CARRY <= 50
         var numberOfParts = Math.floor(energy / 150);
         numberOfParts = Math.min(numberOfParts, Math.floor(50 / 3));
@@ -87,7 +103,7 @@ export class ExtendedSpawn {
         }
 
         let randEnd = _.random(1, 100);
-        let spawnCode = spawn.spawnCreep(body, "trk_" + randEnd, { memory: { role: 'truck', working: false } });
+        let spawnCode = spawn.spawnCreep(body, "trk_" + randEnd, { memory: { role: 'truck', working: false, containerId: sourceId } });
         if (spawnCode == OK) {
             return "trk_" + randEnd;
         } else {
@@ -113,7 +129,7 @@ export class ExtendedSpawn {
         }
 
         let randEnd = _.random(1, 100);
-        let spawnCode = spawn.spawnCreep(body, stringPart + "_" + randEnd, { memory: { role: roleName, working: false } });
+        let spawnCode = spawn.spawnCreep(body, stringPart + "_" + randEnd, { memory: { role: roleName, working: false, homeRoom: spawn.room.name } });
         return spawnCode == OK ? stringPart + "_" + randEnd : spawnCode;
     }
 }
