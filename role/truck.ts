@@ -9,13 +9,13 @@ export class RoleTruck {
 
         if (creep.memory["working"]) {
             var structure = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {
-                filter: function(s) {
+                filter: function (s) {
                     if (s.structureType == STRUCTURE_TOWER) {
                         return !s.room.memory["towerWorking"];
                     }
                     return (s.structureType == STRUCTURE_EXTENSION ||
-                            s.structureType == STRUCTURE_SPAWN) &&
-                            s.energy < s.energyCapacity;
+                        s.structureType == STRUCTURE_SPAWN) &&
+                        s.energy < s.energyCapacity;
                 }
             });
 
@@ -32,7 +32,7 @@ export class RoleTruck {
             if (creep.memory["containerId"] == undefined || creep.memory["containerId"] == "") {
                 RoleTruck.setContainer(creep);
             }
-            var container = <Structure> Game.getObjectById(creep.memory["containerId"]);
+            var container = <Structure>Game.getObjectById(creep.memory["containerId"]);
 
             if (container == undefined && creep.room.storage != undefined) {
                 container = creep.room.storage;
@@ -40,14 +40,14 @@ export class RoleTruck {
 
             if (container != undefined) {
                 if (creep.withdraw(container, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(container);
+                    creep.moveTo(container, { ignoreCreeps: true });
                 }
             }
         }
     }
 
     private static setContainer(c: Creep) {
-        var containers = Game.spawns["Spawn1"].memory["containers"];
+        var containers = Game.spawns[c.memory["homeSpawn"]].memory["containers"];
         c.memory["containerId"] = containers[Math.round(Math.random())];
     }
 }
