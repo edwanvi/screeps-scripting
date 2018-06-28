@@ -54,13 +54,4 @@ export class RoleHarvester {
         console.log("Saved paths to room " + room.name + " memory");
         room.memory["pathsExist"] = true;
     }
-
-    public static newSource(creep: Creep) {
-        if (Math.random() > 0.5) {
-            creep.memory.energysource = 1;
-        } else {
-            creep.memory.energysource = 0;
-        }
-        console.log(creep + ' will harvest source ' + creep.memory.energysource + ' for role ' + creep.memory.role);
-    }
 }
