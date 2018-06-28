@@ -8,6 +8,7 @@ import { RoleDefender } from "role/defender";
 import { ExtendedSpawn } from "extended_spawn";
 import { RoleTruck } from "role/truck";
 import { RoleMiner } from "role/miner";
+import { RoleInvader } from "role/invader";
 
 // When compiling TS to JS and bundling with rollup, the line numbers and file names in error messages change
 // This utility uses source maps to get the line numbers and file names of the original, TS source code
@@ -51,6 +52,15 @@ export const loop = ErrorMapper.wrapLoop(function () {
         // get the creep object
         var creep = Game.creeps[name];
         switch (creep.memory["role"]) {
+            case 'invader':
+                RoleInvader.run(creep);
+                break;
+            case 'truck':
+                RoleTruck.run(creep);
+                break;
+            case 'miner':
+                RoleMiner.run(creep);
+                break;
             case 'harvester':
                 RoleHarvester.run(creep);
                 break;
@@ -71,12 +81,6 @@ export const loop = ErrorMapper.wrapLoop(function () {
                     RoleDefender.init(Game.spawns["Spawn1"].room);
                 }
                 RoleDefender.run(creep);
-                break;
-            case 'truck':
-                RoleTruck.run(creep);
-                break;
-            case 'miner':
-                RoleMiner.run(creep);
                 break;
             default:
                 // TODO: Make a role-less creep

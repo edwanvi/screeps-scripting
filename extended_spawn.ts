@@ -7,6 +7,7 @@ export class ExtendedSpawn {
         "janitor": 2,
         "upgrader": 3,
         "remoteminer": 1,
+        "invader": 6,
         "harvester": 0
     };
 
@@ -23,6 +24,7 @@ export class ExtendedSpawn {
                 census[role] = _.sum(Game.creeps, c => c.memory["role"] == role ? 1 : 0);
             }
         }
+        census["invader"] = _.sum(Game.creeps, c => c.memory["role"] == "invader" ? 1 : 0)
         census["miner"] = _.sum(creepsInRoom, c => c.memory["role"] == "miner" ? 1 : 0);
 
         let energyMax = room.energyCapacityAvailable;
@@ -36,7 +38,7 @@ export class ExtendedSpawn {
                 name = ExtendedSpawn.createTruck(spawn, 150, "");
             } else {
                 // create solo harvester
-                name = ExtendedSpawn.createCustom(spawn, room.energyAvailable, 'harvester', "hrv_");
+                name = ExtendedSpawn.createHarvester(spawn, room.energyAvailable);
             }
         } else {
             // normal operation no backup
@@ -45,7 +47,7 @@ export class ExtendedSpawn {
             for (let source of sources) {
                 if (!_.some(creepsInRoom, c => c.memory["role"] == "miner" && c.memory["sourceId"] == source.id)) {
                     let containers = source.pos.findInRange(FIND_STRUCTURES, 1, {
-                        filter: function(s: AnyStructure) {
+                        filter: function (s: AnyStructure) {
                             return s.structureType == STRUCTURE_CONTAINER;
                         }
                     });
@@ -57,7 +59,7 @@ export class ExtendedSpawn {
                 }
             }
             let containers = room.find(FIND_STRUCTURES, {
-                filter: function(s) {
+                filter: function (s) {
                     return s.structureType == STRUCTURE_CONTAINER;
                 }
             });
@@ -77,6 +79,7 @@ export class ExtendedSpawn {
                     if (role == "truck") {
                         name = ExtendedSpawn.createTruck(spawn, 150, "");
                     } else {
+                        // console.log(role);
                         name = ExtendedSpawn.createCustom(spawn, Math.floor(energyMax / 2), role, role.replace(/[aeiouy]/gi, ""));
                     }
                     break;
@@ -84,9 +87,31 @@ export class ExtendedSpawn {
             }
         }
 
+        // are we invading with this spawn?
+        if (name == undefined && Game.flags["invade"] != undefined && Game.flags["invade"].memory["spawn"] == spawn.name) {
+            if (census["invader"] < ExtendedSpawn.minCreeps["invader"]) {
+                name = ExtendedSpawn.createAttacker(spawn, Math.floor(energyMax / 2));
+            }
+        }
+
         if (name != undefined && _.isString(name)) {
             console.log(spawn.name + " spawned new creep " + name);
         }
+    }
+
+    private static createAttacker(spawn: StructureSpawn, energy: number) {
+        var numberOfParts = Math.floor(energy / 330);
+        numberOfParts = Math.min(numberOfParts, Math.floor(50 / 3));
+        var body: BodyPartConstant[] = [];
+        for (let i = 0; i < numberOfParts; i++) {
+            body.push(ATTACK);
+            body.push(RANGED_ATTACK);
+            body.push(CARRY);
+            body.push(MOVE);
+        }
+        let creepName = "attck_" + _.random(0, 100);
+        let spawnCode = spawn.spawnCreep(body, creepName, { memory: { role: "invader", homeRoom: spawn.room.name, homeSpawn: spawn.name } });
+        return spawnCode == OK ? creepName : spawnCode;
     }
 
     private static createTruck(spawn: StructureSpawn, energy: number, sourceId: string) {
@@ -103,7 +128,7 @@ export class ExtendedSpawn {
         }
 
         let randEnd = _.random(1, 100);
-        let spawnCode = spawn.spawnCreep(body, "trk_" + randEnd, { memory: { role: 'truck', working: false, containerId: sourceId } });
+        let spawnCode = spawn.spawnCreep(body, "trk_" + randEnd, { memory: { role: 'truck', working: false, containerId: sourceId, homeSpawn: spawn.name } });
         if (spawnCode == OK) {
             return "trk_" + randEnd;
         } else {
@@ -115,6 +140,22 @@ export class ExtendedSpawn {
         let creepName = "mnr_" + _.random(1, 100);
         let spawnCode = spawn.spawnCreep([WORK, WORK, WORK, WORK, WORK, MOVE], creepName, { memory: { role: 'miner', sourceId: id } });
         return spawnCode == OK ? creepName : spawnCode;
+    }
+
+    private static createHarvester(spawn: StructureSpawn, energy: number) {
+        // use similar to createCustom
+        var numberOfParts = Math.floor(energy / 200);
+        numberOfParts = Math.min(numberOfParts, Math.floor(50 / 3));
+        var body: BodyPartConstant[] = [];
+        for (let i = 0; i < numberOfParts; i++) {
+            body.push(WORK);
+            body.push(CARRY);
+            body.push(MOVE);
+        }
+
+        let randEnd = _.random(1, 100);
+        let spawnCode = spawn.spawnCreep(body, "hrvstr_" + randEnd, { memory: { role: "harvester", working: false, homeRoom: spawn.room.name, homeSpawn: spawn.name } });
+        return spawnCode == OK ? "hrvstr_" + randEnd : spawnCode;
     }
 
     private static createCustom(spawn: StructureSpawn, energy: number, roleName: string, stringPart: string) {
