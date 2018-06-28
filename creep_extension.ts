@@ -7,12 +7,11 @@ export class ExtendedCreep {
         if (useContainers) {
             // find closest container
             if (creep.room.storage != undefined) {
-                container = creep.room.storage.store[RESOURCE_ENERGY] >= creep.carryCapacity ? creep.room.storage : undefined;
+                container = creep.room.storage.store[RESOURCE_ENERGY] >= (creep.carryCapacity - creep.carry[RESOURCE_ENERGY]) ? creep.room.storage : undefined;
             }
             if (container == undefined) {
                 container = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-                    filter: s => (s.structureType == STRUCTURE_CONTAINER) &&
-                        s.store[RESOURCE_ENERGY] > 0
+                    filter: s => (s.structureType == STRUCTURE_CONTAINER) && s.store[RESOURCE_ENERGY] / s.storeCapacity > 0.25
                 });
             }
             // if one was found
