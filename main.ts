@@ -6,7 +6,6 @@ import { RoleJanitor } from "role/janitor";
 import { RemoteMiner } from "role/remoteminer";
 import { RoleDefender } from "role/defender";
 import { ExtendedSpawn } from "extended_spawn";
-import * as specs from "specs";
 import { RoleTruck } from "role/truck";
 import { RoleMiner } from "role/miner";
 
