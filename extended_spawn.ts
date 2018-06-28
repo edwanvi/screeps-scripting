@@ -6,7 +6,7 @@ export class ExtendedSpawn {
         "builder": 4,
         "janitor": 2,
         "upgrader": 3,
-        "remoteminer": 1,
+        "remoteminer": 3,
         "invader": 6,
         "harvester": 0
     };
