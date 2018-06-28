@@ -29,7 +29,7 @@ export class RoleTruck {
                 }
             }
         } else {
-            if (creep.memory["containerId"] == undefined) {
+            if (creep.memory["containerId"] == undefined || creep.memory["containerId"] == "") {
                 RoleTruck.setContainer(creep);
             }
             var container = <Structure> Game.getObjectById(creep.memory["containerId"]);
