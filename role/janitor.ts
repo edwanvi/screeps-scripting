@@ -1,5 +1,6 @@
 import { RoleBuilder } from "role/builder";
 import { ExUt } from "../extrautils";
+import { ExtendedCreep } from "creep_extension";
 
 export class RoleJanitor {
   // a function to run the logic for this role
@@ -33,16 +34,7 @@ export class RoleJanitor {
         RoleBuilder.run(creep);
       }
     } else {
-      // find closest source
-      var source = creep.pos.findClosestByPath(FIND_SOURCES, {algorithm: 'astar'});
-      if (source == null) {
-        source = ExUt.getSources(Game.spawns["Spawn1"])[0];
-      }
-      // try to harvest energy, if the source is not in range
-      if (creep.harvest(source) == ERR_NOT_IN_RANGE) {
-        // move towards the source
-        creep.moveTo(source, {reusePath:20});
-      }
+      ExtendedCreep.getEnergy(creep, true, false);
     }
   }
 }

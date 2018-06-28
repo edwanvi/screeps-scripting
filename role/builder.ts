@@ -1,4 +1,5 @@
 import { RoleUpgrader } from "role/upgrader";
+import { ExtendedCreep } from "creep_extension";
 import { ExtraUtils } from "../extrautils";
 
 export class RoleBuilder {
@@ -30,12 +31,7 @@ export class RoleBuilder {
                 RoleUpgrader.run(creep);
             }
         } else {
-            var sources = ExtraUtils.getSources(Game.spawns["Spawn1"]);
-            // try to harvest energy, if the source is not in range
-            if (creep.harvest(sources[creep.memory["energysource"]]) == ERR_NOT_IN_RANGE) {
-                // move towards the source
-                creep.moveTo(sources[creep.memory["energysource"]])
-            }
+            ExtendedCreep.getEnergy(creep, true, true);
         }
     }
 }
