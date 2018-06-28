@@ -1,5 +1,4 @@
-import { RoleTruck } from "./truck";
-import { RoleUpgrader } from "./upgrader";
+import { RoleUpgrader } from "role/maintain/upgrader";
 
 export class RemoteMiner {
     public static run(creep: Creep) {

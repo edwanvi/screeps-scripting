@@ -1,4 +1,4 @@
-import { RoleTruck } from "./truck";
+import { RoleTruck } from "role/gather/truck";
 
 export class RoleInvader {
     public static run(creep: Creep) {

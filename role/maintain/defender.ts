@@ -1,4 +1,4 @@
-import { RoleHarvester } from "role/harvester";
+import { RoleHarvester } from "role/start/harvester";
 
 export class RoleDefender {
 

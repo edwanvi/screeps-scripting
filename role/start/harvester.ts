@@ -1,5 +1,5 @@
-import { RoleJanitor } from "role/janitor";
-import { ExUt } from "../extrautils";
+import { RoleJanitor } from "role/maintain/janitor";
+import { ExUt } from "extrautils";
 
 export class RoleHarvester {
     public static run(creep: Creep) {

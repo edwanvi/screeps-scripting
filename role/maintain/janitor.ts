@@ -1,5 +1,4 @@
-import { RoleBuilder } from "role/builder";
-import { ExUt } from "../extrautils";
+import { RoleBuilder } from "role/maintain/builder";
 import { ExtendedCreep } from "creep_extension";
 
 export class RoleJanitor {

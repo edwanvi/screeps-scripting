@@ -1,13 +1,13 @@
 import { ErrorMapper } from "utils/ErrorMapper";
-import { RoleHarvester } from "role/harvester";
-import { RoleUpgrader } from "role/upgrader";
-import { RoleBuilder } from "role/builder";
-import { RoleJanitor } from "role/janitor";
-import { RemoteMiner } from "role/remoteminer";
-import { RoleDefender } from "role/defender";
+import { RoleHarvester } from "role/start/harvester";
+import { RoleUpgrader } from "role/maintain/upgrader";
+import { RoleBuilder } from "role/maintain/builder";
+import { RoleJanitor } from "role/maintain/janitor";
+import { RemoteMiner } from "role/gather/remoteminer";
+import { RoleDefender } from "role/maintain/defender";
 import { ExtendedSpawn } from "extended_spawn";
-import { RoleTruck } from "role/truck";
-import { RoleMiner } from "role/miner";
+import { RoleTruck } from "role/gather/truck";
+import { RoleMiner } from "role/gather/miner";
 import { RoleInvader } from "role/invader";
 
 // When compiling TS to JS and bundling with rollup, the line numbers and file names in error messages change

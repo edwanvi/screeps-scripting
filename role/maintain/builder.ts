@@ -1,6 +1,6 @@
-import { RoleUpgrader } from "role/upgrader";
+import { RoleUpgrader } from "role/maintain/upgrader";
 import { ExtendedCreep } from "creep_extension";
-import { ExtraUtils } from "../extrautils";
+import { ExtraUtils } from "extrautils";
 
 export class RoleBuilder {
     public static run(creep: Creep) {
