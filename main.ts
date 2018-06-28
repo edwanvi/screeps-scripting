@@ -83,5 +83,7 @@ export const loop = ErrorMapper.wrapLoop(function () {
                 RoleUpgrader.run(creep);
         }
     }
-    ExtendedSpawn.spawnCreepsAsNeeded(Game.spawns["Spawn1"]);
+    for (let spawnName in Game.spawns) {
+        ExtendedSpawn.spawnCreepsAsNeeded(Game.spawns[spawnName]);
+    }
 });

@@ -3,8 +3,8 @@ import { ExUt } from "../extrautils";
 
 export class RoleHarvester {
     public static run(creep: Creep) {
-        if (Game.spawns["Spawn1"].memory["pathsExist"] == null || !Game.spawns["Spawn1"].memory["pathsExist"]) {
-            RoleHarvester.pathsInit(Game.spawns["Spawn1"]);
+        if (Game.rooms[creep.memory["homeRoom"]].memory["pathsExist"] == null || !Game.rooms[creep.memory["homeRoom"]].memory["pathsExist"]) {
+            RoleHarvester.pathsInit(Game.rooms[creep.memory["homeRoom"]], Game.spawns[creep.memory["homeSpawn"]].pos);
         }
         if (creep.memory["energysource"] == null) {
             ExUt.newSource(creep);
@@ -19,7 +19,7 @@ export class RoleHarvester {
             var targets = creep.room.find(FIND_STRUCTURES, {
                 filter: function(s) {
                     if (s.structureType == STRUCTURE_TOWER) {
-                        return s.energy / s.energyCapacity <= 0.5;
+                        return !s.room.memory["towerWorking"];
                     } else if (s.structureType == STRUCTURE_STORAGE) {
                         return s.store[RESOURCE_ENERGY] < Math.pow(10, 4);
                     } else {
@@ -35,10 +35,11 @@ export class RoleHarvester {
                 RoleJanitor.run(creep);
             }
         } else {
-            var sources = ExUt.getSources(Game.spawns["Spawn1"]);
+            let room = Game.rooms[creep.memory["homeRoom"]];
+            let sources = room.find(FIND_SOURCES);
             if (creep.harvest(sources[creep.memory["energysource"]]) == ERR_NOT_IN_RANGE) {
-                if (creep.moveByPath(Game.spawns["Spawn1"].memory["source" + creep.memory["energysource"] + "path"]) == ERR_NOT_FOUND) {
-                    var path = Room.deserializePath(Game.spawns["Spawn1"].memory["source" + creep.memory["energysource"] + "path"]);
+                if (creep.moveByPath(room.memory["source" + creep.memory["energysource"] + "path"]) == ERR_NOT_FOUND) {
+                    var path = Room.deserializePath(room.memory["source" + creep.memory["energysource"] + "path"]);
                     var first_point = path[0];
                     creep.moveTo(first_point.x, first_point.y);
                 }
@@ -46,12 +47,12 @@ export class RoleHarvester {
         }
     }
 
-    private static pathsInit(spawn: StructureSpawn) {
-        var sources = ExUt.getSources(spawn);
-        spawn.memory["source0path"] = Room.serializePath(spawn.pos.findPathTo(sources[0].pos, {ignoreCreeps: true}));
-        spawn.memory["source1path"] = Room.serializePath(spawn.pos.findPathTo(sources[1].pos, {ignoreCreeps: true}));
-        console.log("Saved paths to spawn memory");
-        spawn.memory["pathsExist"] = true;
+    private static pathsInit(room: Room, start: RoomPosition) {
+        var sources = room.find(FIND_SOURCES);
+        room.memory["source0path"] = Room.serializePath(start.findPathTo(sources[0].pos, {ignoreCreeps: true}));
+        room.memory["source1path"] = Room.serializePath(start.findPathTo(sources[1].pos, {ignoreCreeps: true}));
+        console.log("Saved paths to room " + room.name + " memory");
+        room.memory["pathsExist"] = true;
     }
 
     public static newSource(creep: Creep) {
