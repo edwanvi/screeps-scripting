@@ -9,6 +9,7 @@ import { ExtendedSpawn } from "extended_spawn";
 import { RoleTruck } from "role/gather/truck";
 import { RoleMiner } from "role/gather/miner";
 import { RoleInvader } from "role/invader";
+import { RoleSettler } from "role/start/settler";
 
 // When compiling TS to JS and bundling with rollup, the line numbers and file names in error messages change
 // This utility uses source maps to get the line numbers and file names of the original, TS source code
@@ -75,6 +76,9 @@ export const loop = ErrorMapper.wrapLoop(function () {
                 break;
             case 'remoteminer':
                 RemoteMiner.run(creep);
+                break;
+            case 'settler':
+                RoleSettler.run(creep);
                 break;
             case 'defense':
                 if (RoleDefender.getHostiles() == undefined) {
