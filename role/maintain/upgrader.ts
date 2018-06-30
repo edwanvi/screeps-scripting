@@ -15,7 +15,7 @@ export class RoleUpgrader {
                 creep.moveTo(creep.room.controller, { reusePath: 20 });
             }
         } else {
-            ExtendedCreep.getEnergy(creep, true, true);
+            ExtendedCreep.getEnergy(creep, creep.room.controller != undefined ? creep.room.controller.level > 3 : false, true);
         }
     }
 }
