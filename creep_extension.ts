@@ -10,9 +10,18 @@ export class ExtendedCreep {
                 container = creep.room.storage.store[RESOURCE_ENERGY] >= (creep.carryCapacity - creep.carry[RESOURCE_ENERGY]) ? creep.room.storage : undefined;
             }
             if (container == undefined) {
-                container = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-                    filter: s => (s.structureType == STRUCTURE_CONTAINER) && s.store[RESOURCE_ENERGY] / s.storeCapacity > 0.25
-                });
+                if (creep.memory["energysource"] == undefined) {
+                    container = creep.pos.findClosestByRange(FIND_STRUCTURES, {
+                        filter: s => (s.structureType == STRUCTURE_CONTAINER) && s.store[RESOURCE_ENERGY] > 0
+                    });
+                } else {
+                    let source = creep.room.find(FIND_SOURCES)[creep.memory["energysource"]];
+                    container = source.pos.findInRange(FIND_STRUCTURES, 1, {
+                        filter: function(s: AnyStructure) {
+                            return s.structureType == STRUCTURE_CONTAINER && s.store[RESOURCE_ENERGY] > 0;
+                        }
+                    })[0];
+                }
             }
             // if one was found
             if (container != undefined) {
@@ -36,7 +45,7 @@ export class ExtendedCreep {
             // try to harvest energy, if the source is not in range
             if (creep.harvest(source) == ERR_NOT_IN_RANGE) {
                 // move towards it
-                creep.moveTo(source, { reusePath: 50, ignoreCreeps: true });
+                creep.moveTo(source, { reusePath: 50 });
             }
         }
     }
