@@ -51,7 +51,14 @@ export class RemoteMiner {
                     RoleUpgrader.run(creep);
                 }
             } else {
-                creep.moveTo(new RoomPosition(25, 25, creep.memory["homeRoom"]));
+                let sites = creep.room.find(FIND_CONSTRUCTION_SITES);
+                if (sites.length > 0) {
+                    if (creep.build(sites[0]) == ERR_NOT_IN_RANGE) {
+                        creep.moveTo(sites[0]);
+                    }
+                } else {
+                    creep.moveTo(new RoomPosition(25, 25, creep.memory["homeRoom"]));
+                }
             }
         }
     }
