@@ -14,32 +14,6 @@ import { RoleSettler } from "role/start/settler";
 // When compiling TS to JS and bundling with rollup, the line numbers and file names in error messages change
 // This utility uses source maps to get the line numbers and file names of the original, TS source code
 export const loop = ErrorMapper.wrapLoop(function () {
-    var tower = <StructureTower>Game.getObjectById(Game.spawns["Spawn1"].memory["towerId"]);
-    if (tower) {
-        if (tower.room.memory["towerWorking"] && tower.energy == 0) {
-            tower.room.memory["towerWorking"] = false;
-        } else if (!tower.room.memory["towerWorking"] && tower.energy == tower.energyCapacity) {
-            tower.room.memory["towerWorking"] = true;
-        }
-
-        if (tower.room.memory["towerWorking"]) {
-            var damagedStructures = tower.room.find(FIND_STRUCTURES, {
-                filter: function (structure: Structure) {
-                    return structure.hits < structure.hitsMax && structure.structureType != STRUCTURE_ROAD && structure.structureType != STRUCTURE_WALL;
-                }
-            });
-            if (damagedStructures.length > 0) {
-                damagedStructures.sort((a, b) => a.hits - b.hits);
-                tower.repair(damagedStructures[0]);
-            }
-        }
-
-        var closestHostile = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
-        if (closestHostile) {
-            tower.attack(closestHostile);
-        }
-    }
-
     PathFinder.use(true);
     // check for memory entries of dead creeps by iterating over Memory.creeps
     for (var name in Memory.creeps) {
@@ -92,6 +66,31 @@ export const loop = ErrorMapper.wrapLoop(function () {
         }
     }
     for (let spawnName in Game.spawns) {
+        var tower = <StructureTower>Game.getObjectById(Game.spawns[spawnName].memory["towerId"]);
+        if (tower) {
+            if (tower.room.memory["towerWorking"] && tower.energy / tower.energyCapacity <= 0.25) {
+                tower.room.memory["towerWorking"] = false;
+            } else if (!(tower.room.memory["towerWorking"]) && tower.energy == tower.energyCapacity) {
+                tower.room.memory["towerWorking"] = true;
+            }
+
+            if (tower.room.memory["towerWorking"]) {
+                var damagedStructures = tower.room.find(FIND_STRUCTURES, {
+                    filter: function (structure: Structure) {
+                        return structure.hits < structure.hitsMax && structure.structureType != STRUCTURE_ROAD && structure.structureType != STRUCTURE_WALL;
+                    }
+                });
+                if (damagedStructures.length > 0) {
+                    damagedStructures.sort((a, b) => a.hits - b.hits);
+                    tower.repair(damagedStructures[0]);
+                }
+            }
+
+            var closestHostile = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+            if (closestHostile) {
+                tower.attack(closestHostile);
+            }
+        }
         ExtendedSpawn.spawnCreepsAsNeeded(Game.spawns[spawnName]);
     }
 });
