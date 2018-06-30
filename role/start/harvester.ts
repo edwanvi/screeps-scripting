@@ -1,5 +1,5 @@
-import { RoleJanitor } from "role/maintain/janitor";
 import { ExUt } from "extrautils";
+import { RoleUpgrader } from "../maintain/upgrader";
 
 export class RoleHarvester {
     public static run(creep: Creep) {
@@ -32,7 +32,7 @@ export class RoleHarvester {
                     creep.moveTo(targets[0], { reusePath: 20 });
                 }
             } else {
-                RoleJanitor.run(creep);
+                RoleUpgrader.run(creep);
             }
         } else {
             let room = Game.rooms[creep.memory["homeRoom"]];
