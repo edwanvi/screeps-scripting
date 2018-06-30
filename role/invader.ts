@@ -13,14 +13,17 @@ export class RoleInvader {
             } else {
                 let target = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
                 if (target) {
-                    if ((creep.rangedAttack(target) == ERR_NOT_IN_RANGE || creep.rangedAttack(target) == ERR_NO_BODYPART) && creep.attack(target) == ERR_NOT_IN_RANGE) {
+                    if (creep.attack(target) == ERR_NOT_IN_RANGE && (creep.rangedAttack(target) == ERR_NOT_IN_RANGE || creep.rangedAttack(target) == ERR_NO_BODYPART)) {
                         creep.moveTo(target);
                     }
                 } else {
-                    let targets = creep.room.find(FIND_HOSTILE_SPAWNS);
+                    let targets = creep.room.find(FIND_HOSTILE_STRUCTURES, {
+                        filter: s => s.structureType != STRUCTURE_CONTROLLER
+                    });
                     if (targets.length > 0) {
-                        if ((creep.rangedAttack(targets[0]) == ERR_NOT_IN_RANGE || creep.rangedAttack(targets[0]) == ERR_NO_BODYPART) && creep.attack(targets[0]) == ERR_NOT_IN_RANGE) {
-                            creep.moveTo(targets[0]);
+                        let target = targets[0];
+                        if (creep.attack(target) == ERR_NOT_IN_RANGE && (creep.rangedAttack(target) == ERR_NOT_IN_RANGE || creep.rangedAttack(target) == ERR_NO_BODYPART)) {
+                            creep.moveTo(target);
                         }
                     }
                 }

@@ -1,6 +1,6 @@
 export class ExtendedSpawn {
     // order dictates spawning priority
-    private static listOfRoles = ["truck", "upgrader", "builder", "remoteminer", "janitor", "defense", "harvester"];
+    private static listOfRoles = ["upgrader", "truck", "builder", "remoteminer", "janitor", "defense", "harvester"];
     private static minCreeps: { [role: string]: number } = {
         "truck": 2,
         "builder": 4,
@@ -8,6 +8,7 @@ export class ExtendedSpawn {
         "upgrader": 3,
         "remoteminer": 3,
         "invader": 6,
+        "settler": 2,
         "harvester": 0
     };
 
@@ -24,7 +25,8 @@ export class ExtendedSpawn {
                 census[role] = _.sum(Game.creeps, c => c.memory["role"] == role ? 1 : 0);
             }
         }
-        census["invader"] = _.sum(Game.creeps, c => c.memory["role"] == "invader" ? 1 : 0)
+        census["invader"] = _.sum(Game.creeps, c => c.memory["role"] == "invader" ? 1 : 0);
+        census["settler"] = _.sum(Game.creeps, c => c.memory["role"] == "settler" ? 1 : 0);
         census["miner"] = _.sum(creepsInRoom, c => c.memory["role"] == "miner" ? 1 : 0);
 
         let energyMax = room.energyCapacityAvailable;
@@ -60,11 +62,11 @@ export class ExtendedSpawn {
             }
             let containers = room.find(FIND_STRUCTURES, {
                 filter: function (s) {
-                    return s.structureType == STRUCTURE_CONTAINER;
+                    return s.structureType == STRUCTURE_CONTAINER && !(s.pos.findInRange(FIND_MINERALS, 1).length > 0);
                 }
             });
             for (let container of containers) {
-                if (!_.some(creepsInRoom, c => c.memory["role"] == "truck" && c.memory["containerId"] == container.id)) {
+                if (!_.some(creepsInRoom, c => c.memory["role"] == "truck" && c.memory["containerId"] == container.id) && census['miner'] > 0) {
                     name = ExtendedSpawn.createTruck(spawn, 350, container.id);
                     break;
                 }
@@ -80,7 +82,7 @@ export class ExtendedSpawn {
                         name = ExtendedSpawn.createTruck(spawn, 150, "");
                     } else {
                         // console.log(role);
-                        name = ExtendedSpawn.createCustom(spawn, Math.floor(energyMax / 2), role, role.replace(/[aeiouy]/gi, ""));
+                        name = ExtendedSpawn.createCustom(spawn, Math.floor(energyMax > 400 ? energyMax / 2 : 300), role, role.replace(/[aeiouy]/gi, ""));
                     }
                     break;
                 }
@@ -91,6 +93,13 @@ export class ExtendedSpawn {
         if (name == undefined && Game.flags["invade"] != undefined && Game.flags["invade"].memory["spawn"] == spawn.name) {
             if (census["invader"] < ExtendedSpawn.minCreeps["invader"]) {
                 name = ExtendedSpawn.createAttacker(spawn, Math.floor(energyMax / 2));
+            }
+        }
+
+        // settling a new room perhaps?
+        if (name == undefined && Game.flags["claimRoom"] != undefined && Game.flags["claimRoom"].memory["spawn"] == spawn.name) {
+            if (census["settler"] < ExtendedSpawn.minCreeps["settler"]) {
+                name = ExtendedSpawn.createSettler(spawn, 800);
             }
         }
 
@@ -111,6 +120,21 @@ export class ExtendedSpawn {
         }
         let creepName = "attck_" + _.random(0, 100);
         let spawnCode = spawn.spawnCreep(body, creepName, { memory: { role: "invader", homeRoom: spawn.room.name, homeSpawn: spawn.name } });
+        return spawnCode == OK ? creepName : spawnCode;
+    }
+
+    private static createSettler(spawn: StructureSpawn, energy: number) {
+        var numberOfParts = Math.floor(energy / 800);
+        numberOfParts = Math.min(numberOfParts, Math.floor(50 / 3));
+        var body: BodyPartConstant[] = [];
+        for (let i = 0; i < numberOfParts; i++) {
+            body.push(WORK);
+            body.push(CARRY);
+            body.push(CLAIM);
+            body.push(MOVE);
+        }
+        let creepName = "sttlr_" + _.random(0, 100);
+        let spawnCode = spawn.spawnCreep(body, creepName, { memory: { role: "settler" } });
         return spawnCode == OK ? creepName : spawnCode;
     }
 
@@ -170,7 +194,7 @@ export class ExtendedSpawn {
         }
 
         let randEnd = _.random(1, 100);
-        let spawnCode = spawn.spawnCreep(body, stringPart + "_" + randEnd, { memory: { role: roleName, working: false, homeRoom: spawn.room.name } });
+        let spawnCode = spawn.spawnCreep(body, stringPart + "_" + randEnd, { memory: { role: roleName, working: false, homeRoom: spawn.room.name, homeSpawn: spawn.name } });
         return spawnCode == OK ? stringPart + "_" + randEnd : spawnCode;
     }
 }
